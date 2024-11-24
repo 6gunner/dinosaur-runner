@@ -5,6 +5,8 @@
 (function () {
     'use strict';
     /**
+     * 
+     * 游戏主控制器
      * T-Rex runner.
      * @param {string} outerContainerId Outer containing element id.
      * @param {Object} opt_config
@@ -30,16 +32,16 @@
         this.canvas = null;
         this.canvasCtx = null;
 
-        this.tRex = null;
+        this.tRex = null; // 恐龙
 
-        this.distanceMeter = null;
-        this.distanceRan = 0;
+        this.distanceMeter = null; // 距离计数器
+        this.distanceRan = 0; // 已跑距离
 
         this.highestScore = 0;
 
         this.time = 0;
         this.runningTime = 0;
-        this.msPerFrame = 1000 / FPS;
+        this.msPerFrame = 1000 / FPS; // 每帧毫秒数
         this.currentSpeed = this.config.SPEED;
 
         this.obstacles = [];
@@ -1267,7 +1269,8 @@
     //******************************************************************************
 
     /**
-     * Obstacle.
+     * 
+     * Obstacle. 障碍物
      * @param {HTMLCanvasCtx} canvasCtx
      * @param {Obstacle.type} type
      * @param {Object} spritePos Obstacle position in sprite.
@@ -1519,6 +1522,7 @@
 
     //******************************************************************************
     /**
+     * 恐龙角色
      * T-rex game character.
      * @param {HTMLCanvas} canvas
      * @param {Object} spritePos Positioning within image sprite.
@@ -1884,7 +1888,7 @@
     //******************************************************************************
 
     /**
-     * Handles displaying the distance meter.
+     * Handles displaying the distance meter. 处理显示距离计数器
      * @param {!HTMLCanvasElement} canvas
      * @param {Object} spritePos Image position in sprite.
      * @param {number} canvasWidth
@@ -2145,8 +2149,8 @@
     //******************************************************************************
 
     /**
-     * Cloud background item.
-     * Similar to an obstacle object but without collision boxes.
+     * Cloud background item. 云朵背景项
+     * Similar to an obstacle object but without collision boxes. 类似于障碍物对象，但没有碰撞框。
      * @param {HTMLCanvasElement} canvas Canvas element.
      * @param {Object} spritePos Position of image in sprite.
      * @param {number} containerWidth
@@ -2241,7 +2245,7 @@
     //******************************************************************************
 
     /**
-     * Nightmode shows a moon and stars on the horizon.
+     * Nightmode shows a moon and stars on the horizon. 夜幕模式显示月亮和星星在地平线上。
      */
     function NightMode(canvas, spritePos, containerWidth) {
         this.spritePos = spritePos;
@@ -2397,8 +2401,9 @@
     //******************************************************************************
 
     /**
-     * Horizon Line.
-     * Consists of two connecting lines. Randomly assigns a flat / bumpy horizon.
+     * 
+     * Horizon Line. 地平线
+     * Consists of two connecting lines. Randomly assigns a flat / bumpy horizon. 由两条连接的线组成，随机分配平坦或起伏的地平线。
      * @param {HTMLCanvasElement} canvas
      * @param {Object} spritePos Horizon position in sprite.
      * @constructor
@@ -2672,7 +2677,7 @@
         },
 
         /**
-         * Add a new obstacle.
+         * Add a new obstacle. 添加一个新的障碍物。
          * @param {number} currentSpeed
          */
         addNewObstacle: function (currentSpeed) {
@@ -2700,7 +2705,7 @@
         },
 
         /**
-         * Returns whether the previous two obstacles are the same as the next one.
+         * Returns whether the previous two obstacles are the same as the next one. 返回前两个障碍物是否与下一个相同。
          * Maximum duplication is set in config value MAX_OBSTACLE_DUPLICATION.
          * @return {boolean}
          */
