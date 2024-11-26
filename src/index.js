@@ -1615,7 +1615,7 @@
      * Blinking coefficient.
      * @const
      */
-    Trex.BLINK_TIMING = 7000;
+    Trex.BLINK_TIMING = 7;
 
 
     /**
