@@ -24,7 +24,6 @@ export const SPRITE_DEFINITIONS_2X = {
   OBSTACLES: {
     CACTUS_SMALL: { x: 446, y: 0, width: 34, height: 70 },
     CACTUS_LARGE: { x: 652, y: 0, width: 50, height: 100 },
-    CACTUS_GROUP: { x: 548, y: 0, width: 102, height: 100 },
     // 翼龙
     PTERODACTYL: [
       { x: 260, y: 0, width: 92, height: 80 },

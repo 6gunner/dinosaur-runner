@@ -169,7 +169,7 @@
             CLOUD: { x: 86, y: 2 },
             HORIZON: { x: 2, y: 54 },
             MOON: { x: 484, y: 2 },
-            PTERODACTYL: { x: 134, y: 2 },
+            PTERODACTYL: { x: 134, y: 2 }, // 翼龙
             RESTART: { x: 2, y: 2 },
             TEXT_SPRITE: { x: 655, y: 2 },
             TREX: { x: 848, y: 2 },

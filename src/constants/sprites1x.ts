@@ -3,31 +3,36 @@ export const SPRITE_DEFINITIONS_1X = {
   // 恐龙相关
   DINO: {
     // 静止状态
-    IDLE: { x: 38, y: 0, width: 44, height: 47 },
+    IDLE: { x: 848, y: 2, width: 44, height: 47 },
+    // 眨眼
+    BLINK: [
+      { x: 848, y: 2, width: 44, height: 47 },
+      { x: 892, y: 2, width: 44, height: 47 }
+    ],
     // 跑步动画帧
     RUN: [
-      { x: 848, y: 0, width: 44, height: 47 },
-      { x: 892, y: 0, width: 44, height: 47 }
+      { x: 936, y: 2, width: 44, height: 47 },
+      { x: 980, y: 2, width: 44, height: 47 }
     ],
     // 跳跃状态
-    JUMP: { x: 848, y: 0, width: 44, height: 47 },
+    JUMP: { x: 848, y: 2, width: 44, height: 47 },
     // 蹲下动画帧
     DUCK: [
-      { x: 1112, y: 0, width: 59, height: 47 },
-      { x: 1171, y: 0, width: 59, height: 47 }
+      { x: 1112, y: 2, width: 59, height: 47 },
+      { x: 1171, y: 2, width: 59, height: 47 }
     ],
     // 撞击状态
-    CRASH: { x: 936, y: 0, width: 44, height: 47 }
+    CRASH: { x: 1024, y: 2, width: 44, height: 47 }
   },
 
   // 障碍物
   OBSTACLES: {
-    CACTUS_SMALL: { x: 223, y: 0, width: 17, height: 35 },
-    CACTUS_LARGE: { x: 326, y: 0, width: 25, height: 50 },
-    CACTUS_GROUP: { x: 274, y: 0, width: 51, height: 50 },
+    CACTUS_SMALL: { x: 228, y: 2, width: 17, height: 35 },
+    CACTUS_LARGE: { x: 332, y: 2, width: 25, height: 50 },
+    // 翼龙
     PTERODACTYL: [
-      { x: 130, y: 0, width: 46, height: 40 },
-      { x: 176, y: 0, width: 46, height: 40 }
+      { x: 134, y: 2, width: 46, height: 40 },
+      { x: 180, y: 0, width: 46, height: 40 }
     ]
   },
 
@@ -35,18 +40,18 @@ export const SPRITE_DEFINITIONS_1X = {
   GROUND: { x: 2, y: 54, width: 1200, height: 12 },
 
   // 云朵
-  CLOUD: { x: 86, y: 0, width: 46, height: 14 },
+  CLOUD: { x: 86, y: 2, width: 46, height: 14 },
 
   // 游戏结束
-  GAME_OVER: { x: 647, y: 15, width: 191, height: 11 },
+  GAME_OVER: { x: 655, y: 15, width: 191, height: 11 },
 
   // 重新开始按钮
-  RESTART: { x: 1, y: 1, width: 36, height: 32 },
+  RESTART: { x: 2, y: 2, width: 36, height: 32 },
 
   // 分数数字 (0-9)
   NUMBERS: {
-    x: 647,
-    y: 0,
+    x: 655,
+    y: 2,
     width: 10,
     height: 12,
     digits: [
