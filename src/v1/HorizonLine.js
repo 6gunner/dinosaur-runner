@@ -60,6 +60,8 @@ export class HorizonLine {
    * Return the crop x position of a type.
    */
   getRandomType() {
+    // 如果随机数 > 0.5，返回 WIDTH（使用第二种地面类型）
+    // 否则返回 0（使用第一种地面类型）
     return Math.random() > this.bumpThreshold ? this.dimensions.WIDTH : 0;
   }
 
@@ -101,12 +103,20 @@ export class HorizonLine {
     const line1 = pos;
     const line2 = pos === 0 ? 1 : 0;
 
+      // 移动当前地面块
     this.xPos[line1] -= increment;
+
+    // 移动下一个地面块
     this.xPos[line2] = this.xPos[line1] + this.dimensions.WIDTH;
 
+    // 如果当前地面块移出屏幕左侧，
     if (this.xPos[line1] <= -this.dimensions.WIDTH) {
+
+      // 重置到右侧
       this.xPos[line1] += this.dimensions.WIDTH * 2;
+      // 将下一个地面块接上来
       this.xPos[line2] = this.xPos[line1] - this.dimensions.WIDTH;
+        // 为移动回来的地面块随机选择一个新的地面类型
       this.sourceXPos[line1] = this.getRandomType() + this.spritePos.x;
     }
   }

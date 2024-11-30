@@ -6,6 +6,7 @@ export const GAME_CONSTANTS = {
 
   GAME_HEIGHT: 150,
   GAME_WIDTH: 600,
+  GROUND_WIDTH: 600,  // 地面宽度
   GROUND_HEIGHT: 12,  // 地面高度
   GROUND_MARGIN: 30,  // 地面边距
   DINO_START_X: 50,  // 恐龙初始 X 位置
@@ -76,4 +77,6 @@ export const GAME_CONSTANTS = {
     ARCADE_MODE_INITIAL_TOP_POSITION: 35,
     ARCADE_MODE_TOP_POSITION_PERCENT: 0.1
   }
+
+
 };
