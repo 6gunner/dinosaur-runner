@@ -37,7 +37,10 @@ export const SPRITE_DEFINITIONS_1X = {
   },
 
   // 地面
-  GROUND: { x: 2, y: 54, width: 1200, height: 12 },
+  GROUND: [
+    { x: 2, y: 54, width: 600, height: 12 },
+    { x: 602, y: 54, width: 600, height: 12 }
+  ],
 
   // 云朵
   CLOUD: { x: 86, y: 2, width: 46, height: 14 },

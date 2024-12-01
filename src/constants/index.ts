@@ -76,6 +76,45 @@ export const GAME_CONSTANTS = {
     SPEED_DROP_COEFFICIENT: 3,
     ARCADE_MODE_INITIAL_TOP_POSITION: 35,
     ARCADE_MODE_TOP_POSITION_PERCENT: 0.1
+  },
+
+  Obstacle: {
+    MAX_GAP_COEFFICIENT: 1.5,
+    MAX_OBSTACLE_LENGTH: 3,
+    types: [
+      {
+        type: "CACTUS_SMALL",
+        width: 17,
+        height: 35,
+        yPos: [105],
+        multipleSpeed: 4,
+        minGap: 120,
+        minSpeed: 0,
+      },
+      {
+        type: "CACTUS_LARGE",
+        width: 25,
+        height: 50,
+        yPos: [90],
+        multipleSpeed: 7,
+        minGap: 120,
+        minSpeed: 0,
+
+      },
+      {
+        type: "PTERODACTYL",
+        width: 46,
+        height: 40,
+        yPos: [60, 35, 10], // Variable height
+        yPosMobile: [100, 50], // Variable height mobile
+        multipleSpeed: 999,
+        minSpeed: 8.5,
+        minGap: 150,
+        numFrames: 2, // 帧动画数量
+        frameRate: 1000 / 6, // 帧率, 166.67ms 更新一次
+        speedOffset: 0.8, // 速度加快
+      },
+    ]
   }
 
 

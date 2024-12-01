@@ -5,7 +5,9 @@ import { CollisionBox } from "./CollisionBox.js";
  * Obstacle class
  */
 export class Obstacle {
+  // 最大间隙系数
   static MAX_GAP_COEFFICIENT = 1.5;
+  // 最大障碍物数量
   static MAX_OBSTACLE_LENGTH = 3;
 
   /**
@@ -56,9 +58,9 @@ export class Obstacle {
         new CollisionBox(6, 10, 4, 7),
         new CollisionBox(10, 8, 6, 9),
       ],
-      numFrames: 2,
-      frameRate: 1000 / 6,
-      speedOffset: 0.8,
+      numFrames: 2, // 帧动画数量
+      frameRate: 1000 / 6, // 帧率, 166.67ms 更新一次
+      speedOffset: 0.8, // 速度加快
     },
   ];
 
@@ -187,18 +189,22 @@ export class Obstacle {
   update(deltaTime, speed) {
     if (!this.remove) {
       if (this.typeConfig.speedOffset) {
+        // 速度加快
         speed += this.speedOffset;
       }
+      // 根据速度和时间计算他们的位移
       this.xPos -= Math.floor(((speed * FPS) / 1000) * deltaTime);
 
-      // Update frame
+      // 检查障碍物是否有帧动画，比如翼龙有2帧动画，仙人掌没有帧动画, 有帧动画的必须保证移动频率和帧动画频率一致
       if (this.typeConfig.numFrames) {
         this.timer += deltaTime;
+        // 如果时间大于帧率，则更新帧
         if (this.timer >= this.typeConfig.frameRate) {
           this.currentFrame =
             this.currentFrame === this.typeConfig.numFrames - 1
               ? 0
               : this.currentFrame + 1;
+          // 重置时间
           this.timer = 0;
         }
       }
@@ -214,10 +220,13 @@ export class Obstacle {
    * Calculate a random gap size
    */
   getGap(gapCoefficient, speed) {
+    // 根据速度计算最小间隙
     const minGap = Math.round(
       this.width * speed + this.typeConfig.minGap * gapCoefficient
     );
+    // 根据最小间隙计算最大间隙
     const maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
+    // 返回一个在最小间隙和最大间隙之间的随机数
     return getRandomNum(minGap, maxGap);
   }
 

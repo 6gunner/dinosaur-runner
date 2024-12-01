@@ -1,4 +1,4 @@
-import { AnimatedSprite, Application, Assets, Container, Loader, Rectangle, RenderTexture, Sprite, Texture, TilingSprite } from 'pixi.js';
+import { AnimatedSprite, Application, Assets, Container, Rectangle, Sprite, Texture } from 'pixi.js';
 import spritePng from '@src/assets/default_100_percent/100-offline-sprite.png';
 import { SPRITE_DEFINITIONS_1X as spriteDefinitions } from './constants/sprites1x';
 import { GAME_CONSTANTS, } from './constants';
@@ -13,8 +13,11 @@ async function init() {
   });
   document.body.appendChild(app.canvas);
 
-  const horizonContainer = new Container();
-  app.stage.addChild(horizonContainer);
+  const backgroundContainer = new Container();
+  app.stage.addChild(backgroundContainer);
+
+  const obstacleContainer = new Container();
+  app.stage.addChild(obstacleContainer);
 
   const dinoContainer = new Container();
   app.stage.addChild(dinoContainer);
@@ -65,8 +68,6 @@ async function init() {
   dinoContainer.addChild(duckDino);
 
 
-
-
   // 添加云
   const cloudTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.CLOUD.x, spriteDefinitions.CLOUD.y, spriteDefinitions.CLOUD.width, spriteDefinitions.CLOUD.height) });
   const cloud = new Sprite(cloudTexture);
@@ -75,7 +76,7 @@ async function init() {
   const cloudPosition = getRandomNum(GAME_CONSTANTS.Cloud.MIN_SKY_LEVEL, GAME_CONSTANTS.Cloud.MAX_SKY_LEVEL);
   cloud.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - dino.height - cloudPosition;
 
-  horizonContainer.addChild(cloud);
+  backgroundContainer.addChild(cloud);
 
 
 
@@ -85,25 +86,31 @@ async function init() {
   cactusSmall.anchor.set(0.5, 1);
   cactusSmall.x = 500;
   cactusSmall.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  horizonContainer.addChild(cactusSmall);
+  obstacleContainer.addChild(cactusSmall);
 
   const cactusLargeTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.OBSTACLES.CACTUS_LARGE.x, spriteDefinitions.OBSTACLES.CACTUS_LARGE.y, spriteDefinitions.OBSTACLES.CACTUS_LARGE.width, spriteDefinitions.OBSTACLES.CACTUS_LARGE.height) });
   const cactusLarge = new Sprite(cactusLargeTexture);
   cactusLarge.anchor.set(0.5, 1);
   cactusLarge.x = 550;
   cactusLarge.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  horizonContainer.addChild(cactusLarge);
+  obstacleContainer.addChild(cactusLarge);
 
 
   // 翼龙
+  const pterosaurConfig = GAME_CONSTANTS.Obstacle.types.find(item => item.type === 'PTERODACTYL');
+  if (!pterosaurConfig) {
+    throw new Error('Pterosaur config not found');
+  }
+  const pterosaurYPosIndex = getRandomNum(0, pterosaurConfig.yPos.length - 1);
+  const pterosaurYPos = pterosaurConfig.yPos[pterosaurYPosIndex];
   const pterosaurTextures = spriteDefinitions.OBSTACLES.PTERODACTYL.map(item => new Texture({ source: spriteSheet, frame: new Rectangle(item.x, item.y, item.width, item.height) }));
   const pterosaur = new AnimatedSprite(pterosaurTextures);
   pterosaur.anchor.set(0.5, 1);
   pterosaur.x = GAME_CONSTANTS.DINO_START_X + 300;
-  pterosaur.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - 50;
+  pterosaur.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - pterosaurYPos;
   pterosaur.animationSpeed = 0.1;
   pterosaur.play();
-  horizonContainer.addChild(pterosaur);
+  obstacleContainer.addChild(pterosaur);
 
 
   const groundContainer = createRandomGround(spriteSheet);
@@ -111,35 +118,79 @@ async function init() {
 
   app.ticker.add(() => {
     // 简单的移动
-    horizonContainer.children.forEach(child => {
+    backgroundContainer.children.forEach(child => {
       child.x -= 1;  // 向左移动的速度
       // 如果移出屏幕左侧，重置到右侧
       if (child.x < -child.width) {
         child.x = GAME_CONSTANTS.GAME_WIDTH + child.width;
       }
     });
-    groundContainer.children.forEach(child => {
-      child.x -= 1; // 负值表示向左滚动，正值表示向右滚动
+
+    obstacleContainer.children.forEach(child => {
+      child.x -= 1;  // 向左移动的速度
+      if (child instanceof AnimatedSprite) {
+        child.x -= 2;  // 向左移动的速度
+
+      }
+      // 如果移出屏幕左侧，重置到右侧
+      if (child.x < -child.width) {
+        child.x = GAME_CONSTANTS.GAME_WIDTH + child.width;
+        if (child instanceof AnimatedSprite) {
+          // 更换他们的高度
+          const pterosaurYPos = pterosaurConfig?.yPos[getRandomNum(0, pterosaurConfig?.yPos.length - 1)];
+          child.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - pterosaurYPos;
+        }
+      }
 
     });
-
+    groundContainer.children.forEach(child => {
+      child.x -= 1; // 负值表示向左滚动，正值表示向右滚动
+      if (child.x < -child.width) {
+        const rightmostBlock = groundContainer.children.reduce((prev, curr) =>
+          curr.x > prev.x ? curr : prev
+        );
+        const type = getRandomType();
+        const groundTexture = new Texture({
+          source: spriteSheet,
+          frame: new Rectangle(
+            spriteDefinitions.GROUND[type].x,
+            spriteDefinitions.GROUND[type].y,
+            spriteDefinitions.GROUND[type].width,
+            spriteDefinitions.GROUND[type].height)
+        });
+        // 创建新的texture
+        (child as Sprite).texture = groundTexture;
+        child.x = rightmostBlock.x + rightmostBlock.width;
+      }
+    });
   });
-
 
 }
 
 // 创建随机地面纹理
-
+const bumpThreshold = 0.5;
+function getRandomType() {
+  // 如果随机数 > 0.5，返回 WIDTH（使用第二种地面类型）
+  // 否则返回 0（使用第一种地面类型）
+  return Math.random() > bumpThreshold ? 1 : 0;
+}
 function createRandomGround(spriteSheet: any) {
   const totalWidth = GAME_CONSTANTS.GROUND_WIDTH * 2;
   const groundContainer = new Container();
 
-  let currentX = 0;
-
-  for (currentX; currentX < totalWidth; currentX += GAME_CONSTANTS.GROUND_WIDTH) {
-    const groundTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.GROUND.x, spriteDefinitions.GROUND.y, spriteDefinitions.GROUND.width, spriteDefinitions.GROUND.height) });
+  for (let currentX = 0; currentX < totalWidth + GAME_CONSTANTS.GROUND_WIDTH; currentX += GAME_CONSTANTS.GROUND_WIDTH) {
+    const type = getRandomType();
+    const groundTexture = new Texture({
+      source: spriteSheet, frame: new Rectangle(
+        spriteDefinitions.GROUND[type].x,
+        spriteDefinitions.GROUND[type].y,
+        spriteDefinitions.GROUND[type].width,
+        spriteDefinitions.GROUND[type].height)
+    });
     const ground = new Sprite(groundTexture);
     ground.x = currentX;
+    ground.anchor.set(0, 1);
+    ground.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
     groundContainer.addChild(ground);
   }
 
