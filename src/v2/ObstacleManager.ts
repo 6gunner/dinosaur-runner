@@ -15,7 +15,6 @@ class ObstacleManager {
   private obstacleHistory: ObstacleType[] = [];
 
   // todo 
-  private gapCoefficient: number = 0.6;
   private lastObstacleTime: number = 0;
 
   constructor(app: Application, spriteSheet: any) {
@@ -29,15 +28,6 @@ class ObstacleManager {
     this.app.ticker.add(this.updateObstacles.bind(this));
   }
 
-  private getGap(gapCoefficient: number, speed: number): number {
-    const minGap = 120;
-    const maxGap = 400;
-    const speedMultiplier = 1 + (speed / 10);
-
-    return Math.floor(
-      Math.random() * (maxGap - minGap + 1) + minGap
-    ) * gapCoefficient * speedMultiplier;
-  }
 
 
 
@@ -103,7 +93,7 @@ class ObstacleManager {
       //  最后一个障碍物可见 && 最后一个障碍物加上其间隔已经进入屏幕 && 还没有创建跟随的障碍物
       if (lastObstacle &&
         lastObstacle.isVisible() &&
-        lastObstacle.sprite.x + lastObstacle.sprite.width + lastObstacle.config.minGap < GAME_CONSTANTS.GAME_WIDTH &&
+        lastObstacle.sprite.x + lastObstacle.sprite.width + lastObstacle.gap < GAME_CONSTANTS.GAME_WIDTH &&
         !lastObstacle.followingObstacleCreated
       ) {
         this.addNewObstacle(this.currentSpeed);

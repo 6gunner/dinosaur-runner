@@ -17,6 +17,7 @@ class Obstacle {
   public sprite: Sprite | AnimatedSprite;
   public removed: boolean = false;
   public followingObstacleCreated: boolean = false;
+  public gap: number = 0;
 
   constructor(container: Container, spriteSheet: TextureSource, type: ObstacleType, currentSpeed: number) {
     this.container = container;
@@ -27,10 +28,10 @@ class Obstacle {
       throw new Error(`Obstacle config not found for type: ${type}`);
     }
     this.config = config;
-    this.sprite = this.createObstacle(currentSpeed);
+    this.init(currentSpeed);
   }
 
-  private createObstacle(speed: number) {
+  private init(speed: number) {
     let size = getRandomNum(1, GAME_CONSTANTS.Obstacle.MAX_OBSTACLE_LENGTH);
 
     // 2. 检查速度是否允许
@@ -38,7 +39,6 @@ class Obstacle {
       size = 1;
     }
     const offsetX = this.config.width * size * (0.5 * (size - 1));
-
     let obstacleSprite: Sprite | AnimatedSprite;
     switch (this.type) {
       case "CACTUS_SMALL":
@@ -78,9 +78,10 @@ class Obstacle {
         obstacleSprite = pterosaur;
         break;
     }
-    this.container.addChild(obstacleSprite)
 
-    return obstacleSprite;
+    this.sprite = obstacleSprite;
+    this.container.addChild(obstacleSprite)
+    this.gap = this.initGap(speed);
   }
 
   update(speed: number) {
@@ -111,6 +112,18 @@ class Obstacle {
  */
   isVisible() {
     return this.sprite && this.sprite.x + this.sprite.width > 0;
+  }
+
+
+  private initGap(speed: number): number {
+    // 速度*障碍物宽度+最小间隙*间隙系数
+    const minGap = Math.round(
+      this.sprite.width * speed + this.config.minGap * GAME_CONSTANTS.Obstacle.GAP_COEFFICIENT
+    );
+    // 最小间隙*最大间隙系数
+    const maxGap = Math.round(minGap * GAME_CONSTANTS.Obstacle.MAX_GAP_COEFFICIENT);
+    // 返回一个在最小间隙和最大间隙之间的随机数
+    return getRandomNum(minGap, maxGap);
   }
 
 }
