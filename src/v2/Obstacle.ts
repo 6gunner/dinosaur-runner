@@ -16,6 +16,7 @@ class Obstacle {
   public config: ObstacleConfig;
   public sprite: Sprite | AnimatedSprite;
   public removed: boolean = false;
+  public followingObstacleCreated: boolean = false;
 
   constructor(container: Container, spriteSheet: TextureSource, type: ObstacleType, currentSpeed: number) {
     this.container = container;
@@ -38,7 +39,7 @@ class Obstacle {
     }
     const offsetX = this.config.width * size * (0.5 * (size - 1));
 
-    let obstacle: Sprite;
+    let obstacleSprite: Sprite | AnimatedSprite;
     switch (this.type) {
       case "CACTUS_SMALL":
         const cactusSmallTexture = new Texture({
@@ -50,7 +51,7 @@ class Obstacle {
         cactusSmall.anchor.set(0.5, 1);
         cactusSmall.x = GAME_CONSTANTS.GAME_WIDTH;
         cactusSmall.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-        obstacle = cactusSmall;
+        obstacleSprite = cactusSmall;
         break;
       case "CACTUS_LARGE":
         const cactusLargeTexture = new Texture({
@@ -62,7 +63,7 @@ class Obstacle {
         cactusLarge.anchor.set(0.5, 1);
         cactusLarge.x = GAME_CONSTANTS.GAME_WIDTH;
         cactusLarge.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-        obstacle = cactusLarge;
+        obstacleSprite = cactusLarge;
         break;
       case "PTERODACTYL":
         const pterosaurYPosIndex = getRandomNum(0, this.config.yPos.length - 1);
@@ -74,17 +75,20 @@ class Obstacle {
         pterosaur.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - pterosaurYPos;
         pterosaur.animationSpeed = 0.1;
         pterosaur.play();
-        obstacle = pterosaur;
+        obstacleSprite = pterosaur;
         break;
     }
-    this.container.addChild(obstacle)
+    this.container.addChild(obstacleSprite)
 
-    return obstacle;
+    return obstacleSprite;
   }
 
   update(speed: number) {
+    if (this.removed) {
+      return;
+    }
     if (this.type === 'PTERODACTYL') {
-      this.sprite.x -= 1.5;  // 向左移动的速度
+      this.sprite.x -= 2;  // 向左移动的速度
     } else {
       this.sprite.x -= 1;  // 向左移动的速度
     }
@@ -92,12 +96,21 @@ class Obstacle {
     if (this.sprite.x < -this.sprite.width) {
       // 移除障碍物，重新创建一个新的
       this.remove();
+      return;
     }
   }
 
   public remove() {
-    this.sprite.destroy();
+    // this.sprite.destroy();
     this.removed = true;
+    this.container.removeChild(this.sprite);
+  }
+
+  /**
+ * Check if obstacle is visible
+ */
+  isVisible() {
+    return this.sprite && this.sprite.x + this.sprite.width > 0;
   }
 
 }

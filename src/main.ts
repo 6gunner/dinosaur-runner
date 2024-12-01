@@ -32,18 +32,18 @@ async function init() {
     throw new Error('Sprite sheet not loaded');
   }
   // 恐龙
-  const idleDinoTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.DINO.IDLE.x, spriteDefinitions.DINO.IDLE.y, spriteDefinitions.DINO.IDLE.width, spriteDefinitions.DINO.IDLE.height) });
-  const dino = new Sprite(idleDinoTexture);
-  dino.anchor.set(0.5, 1);
-  dino.x = GAME_CONSTANTS.DINO_START_X;
-  dino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  dinoContainer.addChild(dino);
+  // const idleDinoTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.DINO.IDLE.x, spriteDefinitions.DINO.IDLE.y, spriteDefinitions.DINO.IDLE.width, spriteDefinitions.DINO.IDLE.height) });
+  // const dino = new Sprite(idleDinoTexture);
+  // dino.anchor.set(0.5, 1);
+  // dino.x = GAME_CONSTANTS.DINO_START_X;
+  // dino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+  // dinoContainer.addChild(dino);
 
   const runningDinoTextures = spriteDefinitions.DINO.RUN.map(item => new Texture({
     source: spriteSheet, frame: new Rectangle(item.x, item.y, item.width, item.height)
   }))
   const runningDinoSprite = new AnimatedSprite(runningDinoTextures);
-  runningDinoSprite.x = GAME_CONSTANTS.DINO_START_X + 100;
+  runningDinoSprite.x = GAME_CONSTANTS.DINO_START_X;
   runningDinoSprite.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
   runningDinoSprite.anchor.set(0.5, 1)
   runningDinoSprite.animationSpeed = 0.1;  // 添加动画速度
@@ -51,22 +51,22 @@ async function init() {
   dinoContainer.addChild(runningDinoSprite);
 
   // 恐龙died
-  const diedDinoTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.DINO.CRASH.x, spriteDefinitions.DINO.CRASH.y, spriteDefinitions.DINO.CRASH.width, spriteDefinitions.DINO.CRASH.height) });
-  const diedDino = new Sprite(diedDinoTexture);
-  diedDino.anchor.set(0.5, 1);
-  diedDino.x = GAME_CONSTANTS.DINO_START_X + 200;
-  diedDino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  dinoContainer.addChild(diedDino);
+  // const diedDinoTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.DINO.CRASH.x, spriteDefinitions.DINO.CRASH.y, spriteDefinitions.DINO.CRASH.width, spriteDefinitions.DINO.CRASH.height) });
+  // const diedDino = new Sprite(diedDinoTexture);
+  // diedDino.anchor.set(0.5, 1);
+  // diedDino.x = GAME_CONSTANTS.DINO_START_X + 200;
+  // diedDino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+  // dinoContainer.addChild(diedDino);
 
-  // 恐龙下蹲
-  const duckDinoTextures = spriteDefinitions.DINO.DUCK.map(item => new Texture({ source: spriteSheet, frame: new Rectangle(item.x, item.y, item.width, item.height) }));
-  const duckDino = new AnimatedSprite(duckDinoTextures);
-  duckDino.anchor.set(0.5, 1);
-  duckDino.x = GAME_CONSTANTS.DINO_START_X + 300;
-  duckDino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  duckDino.animationSpeed = 0.1;
-  duckDino.play();
-  dinoContainer.addChild(duckDino);
+  // // 恐龙下蹲
+  // const duckDinoTextures = spriteDefinitions.DINO.DUCK.map(item => new Texture({ source: spriteSheet, frame: new Rectangle(item.x, item.y, item.width, item.height) }));
+  // const duckDino = new AnimatedSprite(duckDinoTextures);
+  // duckDino.anchor.set(0.5, 1);
+  // duckDino.x = GAME_CONSTANTS.DINO_START_X + 300;
+  // duckDino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+  // duckDino.animationSpeed = 0.1;
+  // duckDino.play();
+  // dinoContainer.addChild(duckDino);
 
 
   // 添加云
@@ -75,7 +75,7 @@ async function init() {
   cloud.anchor.set(0, 1);
   cloud.x = GAME_CONSTANTS.Cloud.MAX_CLOUD_GAP;
   const cloudPosition = getRandomNum(GAME_CONSTANTS.Cloud.MIN_SKY_LEVEL, GAME_CONSTANTS.Cloud.MAX_SKY_LEVEL);
-  cloud.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - dino.height - cloudPosition;
+  cloud.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - GAME_CONSTANTS.Trex.HEIGHT - cloudPosition;
 
   backgroundContainer.addChild(cloud);
 

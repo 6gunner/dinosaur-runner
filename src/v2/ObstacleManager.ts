@@ -87,29 +87,27 @@ class ObstacleManager {
 
   updateObstacles(ticker: Ticker) {
     // 1. 更新和清理现有障碍物
-    const updatedObstacles = this.obstacles.slice(0);
-    for (let i = 0; i < this.obstacles.length; i++) {
-      const obstacle = this.obstacles[i];
-      obstacle.update(this.currentSpeed);
+    this.obstacles = this.obstacles.filter(obstacle => {
       if (obstacle.removed) {
-        updatedObstacles.shift();  // 移除已标记删除的障碍物
+        return false;
       }
-    }
-    this.obstacles = updatedObstacles;
+      obstacle.update(this.currentSpeed);
+      return true;
+    });
 
     // 2. 检查是否需要添加新障碍物
     if (this.obstacles.length > 0) {
       const lastObstacle = this.obstacles[this.obstacles.length - 1];
 
-      //   // 当最后一个障碍物满足以下条件时，创建新障碍物：
+      //  当最后一个障碍物满足以下条件时，创建新障碍物：
+      //  最后一个障碍物可见 && 最后一个障碍物加上其间隔已经进入屏幕 && 还没有创建跟随的障碍物
       if (lastObstacle &&
-        //     !lastObstacle.followingObstacleCreated &&  // 还没有创建跟随的障碍物
-        //     lastObstacle.isVisible() &&                // 障碍物可见
-        //     // 最后一个障碍物加上其间隔已经进入屏幕
-        lastObstacle.sprite.x + lastObstacle.sprite.width + lastObstacle.config.minGap < GAME_CONSTANTS.GAME_WIDTH) {
-
+        lastObstacle.isVisible() &&
+        lastObstacle.sprite.x + lastObstacle.sprite.width + lastObstacle.config.minGap < GAME_CONSTANTS.GAME_WIDTH &&
+        !lastObstacle.followingObstacleCreated
+      ) {
         this.addNewObstacle(this.currentSpeed);
-        //     lastObstacle.followingObstacleCreated = true;
+        lastObstacle.followingObstacleCreated = true;
       }
     } else {
       // 没有障碍物时，创建新的
@@ -131,26 +129,5 @@ class ObstacleManager {
     this.lastObstacleTime = 0;
   }
 }
-
-
-// todo 管理障碍物
-// const lastObstacleIndex = this.obstacles.length - 1;
-// this.obstacles.forEach((obstacle, index) => {
-//   obstacle.x -= speed;
-//   // 如果当前障碍物是最后一个障碍物，
-//   if (index == lastObstacleIndex) {
-//     // 且当前障碍物的坐标 + 宽度 + gap < 1200时，
-//     // 则创建一个新的障碍物
-//     if (obstacle.x + obstacle.width + this.config.minGap < GAME_CONSTANTS.GAME_WIDTH) {
-//       const newObstacle = this.createObstacle();
-//       this.obstacles.push(newObstacle);
-//     }
-
-//     if (obstacle.x <= -obstacle.width) {
-//       this.obstacles.splice(index, 1);
-//     }
-//   }
-// });
-
 
 export default ObstacleManager;
