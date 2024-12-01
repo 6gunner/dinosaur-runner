@@ -10,7 +10,7 @@ class ObstacleManager {
   private spriteSheet: TextureSource;
   private container: Container;
 
-  private currentSpeed: number = 8;
+  private currentSpeed: number = 9;
   private obstacles: Obstacle[] = [];
   private obstacleHistory: ObstacleType[] = [];
 
