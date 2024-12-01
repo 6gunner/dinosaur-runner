@@ -1350,6 +1350,7 @@
                 //   | | 1 | |   | |  2  | |   | |   3   | |
                 //   |_|___|_|   |_|_____|_|   |_|_______|_|
                 //
+
                 if (this.size > 1) {
                     this.collisionBoxes[1].width = this.width - this.collisionBoxes[0].width -
                         this.collisionBoxes[2].width;
@@ -2691,6 +2692,7 @@
                 this.addNewObstacle(currentSpeed);
             } else {
                 var obstacleSpritePos = this.spritePos[obstacleType.type];
+                debugger
 
                 this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType,
                     obstacleSpritePos, this.dimensions,

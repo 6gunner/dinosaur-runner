@@ -1,3 +1,4 @@
+import { ObstacleConfig, ObstacleType } from "@src/v2/Obstacle";
 
 
 
@@ -67,7 +68,6 @@ export const GAME_CONSTANTS = {
     MAX_BLINK_COUNT: 3,
     MAX_CLOUDS: 6,
     MAX_OBSTACLE_LENGTH: 3,
-    MAX_OBSTACLE_DUPLICATION: 2,
     MAX_SPEED: 13,
     MIN_JUMP_HEIGHT: 35,
     MOBILE_SPEED_COEFFICIENT: 1.2,
@@ -81,6 +81,7 @@ export const GAME_CONSTANTS = {
   Obstacle: {
     MAX_GAP_COEFFICIENT: 1.5,
     MAX_OBSTACLE_LENGTH: 3,
+    MAX_OBSTACLE_DUPLICATION: 2,
     types: [
       {
         type: "CACTUS_SMALL",
@@ -114,8 +115,7 @@ export const GAME_CONSTANTS = {
         frameRate: 1000 / 6, // 帧率, 166.67ms 更新一次
         speedOffset: 0.8, // 速度加快
       },
-    ]
+    ] as ObstacleConfig[]
   }
 
-
-};
+}

@@ -110,6 +110,7 @@ export class Obstacle {
     this.cloneCollisionBoxes();
 
     // Only allow sizing if we're at the right speed
+    // 只有当游戏的速度足够快时，才允许多个障碍物
     if (this.size > 1 && this.typeConfig.multipleSpeed > speed) {
       this.size = 1;
     }
@@ -145,7 +146,7 @@ export class Obstacle {
           ? this.typeConfig.speedOffset
           : -this.typeConfig.speedOffset;
     }
-
+    // 计算障碍物之间的间隔
     this.gap = this.getGap(this.gapCoefficient, speed);
   }
 

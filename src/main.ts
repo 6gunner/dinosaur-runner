@@ -3,6 +3,8 @@ import spritePng from '@src/assets/default_100_percent/100-offline-sprite.png';
 import { SPRITE_DEFINITIONS_1X as spriteDefinitions } from './constants/sprites1x';
 import { GAME_CONSTANTS, } from './constants';
 import { getRandomNum } from './utils';
+import Obstacle from './v2/Obstacle';
+import ObstacleManager from './v2/ObstacleManager';
 
 async function init() {
   const app = new Application();
@@ -29,7 +31,6 @@ async function init() {
   if (!spriteSheet) {
     throw new Error('Sprite sheet not loaded');
   }
-
   // 恐龙
   const idleDinoTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.DINO.IDLE.x, spriteDefinitions.DINO.IDLE.y, spriteDefinitions.DINO.IDLE.width, spriteDefinitions.DINO.IDLE.height) });
   const dino = new Sprite(idleDinoTexture);
@@ -79,40 +80,11 @@ async function init() {
   backgroundContainer.addChild(cloud);
 
 
-
-  // 障碍物 - 小仙人掌
-  const cactusSmallTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.OBSTACLES.CACTUS_SMALL.x, spriteDefinitions.OBSTACLES.CACTUS_SMALL.y, spriteDefinitions.OBSTACLES.CACTUS_SMALL.width, spriteDefinitions.OBSTACLES.CACTUS_SMALL.height) });
-  const cactusSmall = new Sprite(cactusSmallTexture);
-  cactusSmall.anchor.set(0.5, 1);
-  cactusSmall.x = 500;
-  cactusSmall.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  obstacleContainer.addChild(cactusSmall);
-
-  const cactusLargeTexture = new Texture({ source: spriteSheet, frame: new Rectangle(spriteDefinitions.OBSTACLES.CACTUS_LARGE.x, spriteDefinitions.OBSTACLES.CACTUS_LARGE.y, spriteDefinitions.OBSTACLES.CACTUS_LARGE.width, spriteDefinitions.OBSTACLES.CACTUS_LARGE.height) });
-  const cactusLarge = new Sprite(cactusLargeTexture);
-  cactusLarge.anchor.set(0.5, 1);
-  cactusLarge.x = 550;
-  cactusLarge.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
-  obstacleContainer.addChild(cactusLarge);
+  // 障碍物的生成，
+  const obstacleManager = new ObstacleManager(app, spriteSheet);
 
 
-  // 翼龙
-  const pterosaurConfig = GAME_CONSTANTS.Obstacle.types.find(item => item.type === 'PTERODACTYL');
-  if (!pterosaurConfig) {
-    throw new Error('Pterosaur config not found');
-  }
-  const pterosaurYPosIndex = getRandomNum(0, pterosaurConfig.yPos.length - 1);
-  const pterosaurYPos = pterosaurConfig.yPos[pterosaurYPosIndex];
-  const pterosaurTextures = spriteDefinitions.OBSTACLES.PTERODACTYL.map(item => new Texture({ source: spriteSheet, frame: new Rectangle(item.x, item.y, item.width, item.height) }));
-  const pterosaur = new AnimatedSprite(pterosaurTextures);
-  pterosaur.anchor.set(0.5, 1);
-  pterosaur.x = GAME_CONSTANTS.DINO_START_X + 300;
-  pterosaur.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - pterosaurYPos;
-  pterosaur.animationSpeed = 0.1;
-  pterosaur.play();
-  obstacleContainer.addChild(pterosaur);
-
-
+  // 地面
   const groundContainer = createRandomGround(spriteSheet);
   app.stage.addChild(groundContainer);
 
@@ -126,23 +98,6 @@ async function init() {
       }
     });
 
-    obstacleContainer.children.forEach(child => {
-      child.x -= 1;  // 向左移动的速度
-      if (child instanceof AnimatedSprite) {
-        child.x -= 2;  // 向左移动的速度
-
-      }
-      // 如果移出屏幕左侧，重置到右侧
-      if (child.x < -child.width) {
-        child.x = GAME_CONSTANTS.GAME_WIDTH + child.width;
-        if (child instanceof AnimatedSprite) {
-          // 更换他们的高度
-          const pterosaurYPos = pterosaurConfig?.yPos[getRandomNum(0, pterosaurConfig?.yPos.length - 1)];
-          child.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN - pterosaurYPos;
-        }
-      }
-
-    });
     groundContainer.children.forEach(child => {
       child.x -= 1; // 负值表示向左滚动，正值表示向右滚动
       if (child.x < -child.width) {
@@ -164,7 +119,6 @@ async function init() {
       }
     });
   });
-
 }
 
 // 创建随机地面纹理
@@ -193,9 +147,7 @@ function createRandomGround(spriteSheet: any) {
     ground.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
     groundContainer.addChild(ground);
   }
-
   return groundContainer;
-
 }
 
 init()

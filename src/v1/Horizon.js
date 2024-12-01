@@ -117,14 +117,14 @@ export class Horizon {
    * @param {number} currentSpeed
    */
   updateObstacles(deltaTime, currentSpeed) {
-    // Obstacles, move to Horizon layer.
-    const updatedObstacles = this.obstacles.slice(0);
 
+      // 1. 拿到当前所有障碍物的copy对象
+    const updatedObstacles = this.obstacles.slice(0);
     for (let i = 0; i < this.obstacles.length; i++) {
       const obstacle = this.obstacles[i];
       obstacle.update(deltaTime, currentSpeed);
 
-      // Clean up existing obstacles.
+      // 如果被标记为remove，则移除obstacles.
       if (obstacle.remove) {
         updatedObstacles.shift();
       }
@@ -132,8 +132,11 @@ export class Horizon {
     this.obstacles = updatedObstacles;
 
     if (this.obstacles.length > 0) {
+      // 拿到最后一个障碍物
       const lastObstacle = this.obstacles[this.obstacles.length - 1];
 
+      // 如果最后一个障碍物没有跟随障碍 && 并且可见，
+      //&& xPos + width + gap 小于 canvas宽度 表示已经移入屏幕里
       if (
         lastObstacle &&
         !lastObstacle.followingObstacleCreated &&
@@ -141,12 +144,14 @@ export class Horizon {
         lastObstacle.xPos + lastObstacle.width + lastObstacle.gap <
           this.dimensions.WIDTH
       ) {
+        // 添加新的障碍物
         this.addNewObstacle(currentSpeed);
+        // 标记为跟随障碍物已创建
         lastObstacle.followingObstacleCreated = true;
       }
     } else {
-      // Create new obstacles.
-      this.addNewObstacle(currentSpeed);
+    // 没有障碍物时，创建新的
+    this.addNewObstacle(currentSpeed);
     }
   }
 
@@ -162,6 +167,7 @@ export class Horizon {
    * @param {number} currentSpeed
    */
   addNewObstacle(currentSpeed) {
+    // 随机选择一个障碍物类型
     const obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
     const obstacleType = Obstacle.types[obstacleTypeIndex];
 
@@ -171,8 +177,10 @@ export class Horizon {
       this.duplicateObstacleCheck(obstacleType.type) ||
       currentSpeed < obstacleType.minSpeed
     ) {
+      // 递归尝试添加其他类型
       this.addNewObstacle(currentSpeed);
     } else {
+      // 创建新的障碍物
       const obstacleSpritePos = this.spritePos[obstacleType.type];
 
       this.obstacles.push(
@@ -187,6 +195,7 @@ export class Horizon {
         )
       );
 
+      // 更新障碍物历史记录，只需要保留2个
       this.obstacleHistory.unshift(obstacleType.type);
 
       if (this.obstacleHistory.length > 1) {
@@ -198,6 +207,8 @@ export class Horizon {
   /**
    * Returns whether the previous two obstacles are the same as the next one.
    * Maximum duplication is set in config value MAX_OBSTACLE_DUPLICATION.
+   * 检查是不是一直重复出现这个障碍物，
+   * 障碍物最多不重复2次
    * @return {boolean}
    */
   duplicateObstacleCheck(nextObstacleType) {
