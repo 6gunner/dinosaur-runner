@@ -9,7 +9,13 @@
 </head>
 
 <body>
-  <script src="./src/main-test.ts" type="module"></script>
+  <div id="loading-container">
+    <video id="loading-animation" autoplay loop muted playsinline>
+      <source src="/video/loading.webm" type="video/webm">
+    </video>
+  </div>
+  <div id="game-container"></div>
+  <script src="./src/main.ts" type="module"></script>
 </body>
 
 </html>

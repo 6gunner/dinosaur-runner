@@ -1,24 +1,20 @@
 import { ObstacleConfig, ObstacleType } from "@src/v2/Obstacle";
 
-
-
 // 游戏常量
 export const GAME_CONSTANTS = {
-
   GAME_HEIGHT: 150,
   GAME_WIDTH: 600,
-  GROUND_WIDTH: 600,  // 地面宽度
-  GROUND_HEIGHT: 12,  // 地面高度
-  GROUND_MARGIN: 30,  // 地面边距
-  DINO_START_X: 50,  // 恐龙初始 X 位置
-
+  GROUND_WIDTH: 600, // 地面宽度
+  GROUND_HEIGHT: 12, // 地面高度
+  GROUND_MARGIN: 30, // 地面边距
+  DINO_START_X: 50, // 恐龙初始 X 位置
 
   Trex: {
     DROP_VELOCITY: -5,
     GRAVITY: 0.6,
     HEIGHT: 47,
     HEIGHT_DUCK: 25,
-    INIITAL_JUMP_VELOCITY: -10,
+    INITIAL_JUMP_VELOCITY: -10,
     INTRO_DURATION: 1500,
     MAX_JUMP_HEIGHT: 30,
     MIN_JUMP_HEIGHT: 30,
@@ -26,7 +22,7 @@ export const GAME_CONSTANTS = {
     SPRITE_WIDTH: 262,
     START_X_POS: 50,
     WIDTH: 44,
-    WIDTH_DUCK: 59
+    WIDTH_DUCK: 59,
 
     // collisionBoxes = {
     //   DUCKING: [
@@ -42,16 +38,14 @@ export const GAME_CONSTANTS = {
     //   ]
   },
 
-
   Cloud: {
     HEIGHT: 14,
     MAX_CLOUD_GAP: 400,
     MAX_SKY_LEVEL: 30,
     MIN_CLOUD_GAP: 100,
     MIN_SKY_LEVEL: 71,
-    WIDTH: 46
+    WIDTH: 46,
   },
-
 
   Runner: {
     ACCELERATION: 0.001,
@@ -70,11 +64,11 @@ export const GAME_CONSTANTS = {
     MAX_SPEED: 13,
     MIN_JUMP_HEIGHT: 35,
     MOBILE_SPEED_COEFFICIENT: 1.2,
-    RESOURCE_TEMPLATE_ID: 'audio-resources',
+    RESOURCE_TEMPLATE_ID: "audio-resources",
     SPEED: 6,
     SPEED_DROP_COEFFICIENT: 3,
     ARCADE_MODE_INITIAL_TOP_POSITION: 35,
-    ARCADE_MODE_TOP_POSITION_PERCENT: 0.1
+    ARCADE_MODE_TOP_POSITION_PERCENT: 0.1,
   },
 
   Obstacle: {
@@ -100,7 +94,6 @@ export const GAME_CONSTANTS = {
         multipleSpeed: 7,
         minGap: 120,
         minSpeed: 0,
-
       },
       {
         type: "PTERODACTYL",
@@ -115,7 +108,6 @@ export const GAME_CONSTANTS = {
         frameRate: 1000 / 6, // 帧率, 166.67ms 更新一次
         speedOffset: 0.8, // 速度加快
       },
-    ] as ObstacleConfig[]
-  }
-
-}
+    ] as ObstacleConfig[],
+  },
+};
