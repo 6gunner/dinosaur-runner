@@ -12,6 +12,27 @@ import { SPRITE_DEFINITIONS_1X as spriteDefinitions } from "./constants/sprites1
 import { GAME_CONSTANTS } from "./constants";
 import { getRandomNum } from "./utils";
 
+
+type DinoSprite = Sprite & {
+  isJumping: boolean;
+  isDucking: boolean;
+  jumpVelocity: number;
+  groundY: number;
+  minJumpHeight: number;
+  reachedMinHeight: boolean;
+  speedDrop: boolean;
+};
+
+// 恐龙配置，参考 Trex.js
+const DINO_CONFIG = {
+  DROP_VELOCITY: -5,
+  GRAVITY: 0.6,
+  INITIAL_JUMP_VELOCITY: -12,
+  MAX_JUMP_HEIGHT: 60,
+  MIN_JUMP_HEIGHT: 50,
+  SPEED_DROP_COEFFICIENT: 3,
+};
+
 async function init() {
   const app = new Application();
   await app.init({
@@ -40,31 +61,39 @@ async function init() {
       spriteDefinitions.DINO.JUMP.height
     ),
   });
-  const dino = new Sprite(dinoTexture);
+  const dino = new Sprite(dinoTexture) as DinoSprite;
   // dino.anchor.set(0.5, 0);
   dino.x = GAME_CONSTANTS.DINO_START_X;
   // dino.y = GAME_CONSTANTS.GAME_HEIGHT - spriteDefinitions.DINO.JUMP.height;
   /// 设置为底部
   dino.anchor.set(0.5, 1);
   dino.y = GAME_CONSTANTS.GAME_HEIGHT;
-
   app.stage.addChild(dino);
+
+  // 扩展 dino 对象的属性
+  dino.isJumping = false;
+  dino.isDucking = false;
+  dino.jumpVelocity = 10;
+  dino.groundY = GAME_CONSTANTS.GAME_HEIGHT;
+  dino.minJumpHeight = dino.groundY - DINO_CONFIG.MIN_JUMP_HEIGHT;
+  dino.reachedMinHeight = false;
+  dino.speedDrop = false;
 
   // 地面
   const groundTexture = new Texture({
     source: spriteSheet,
     frame: new Rectangle(
-      spriteDefinitions.GROUND.x,
-      spriteDefinitions.GROUND.y,
-      spriteDefinitions.GROUND.width,
-      spriteDefinitions.GROUND.height
+      spriteDefinitions.GROUND[0].x,
+      spriteDefinitions.GROUND[0].y,
+      spriteDefinitions.GROUND[0].width,
+      spriteDefinitions.GROUND[0].height
     ),
   });
 
   const ground = new TilingSprite({
     texture: groundTexture,
     width: app.screen.width,
-    height: spriteDefinitions.GROUND.height,
+    height: spriteDefinitions.GROUND[0].height,
   });
   // 对于x轴：0 是左边，1 是右边，0.5 是中间
   // 对于y轴：0 是顶部，1 是底部，0.5 是中间
@@ -74,23 +103,23 @@ async function init() {
   app.stage.addChild(ground);
 
   // 趴着的恐龙
-  const duckDinoTexture = new Texture({
-    source: spriteSheet,
-    frame: new Rectangle(
-      spriteDefinitions.DINO.DUCK[0].x,
-      spriteDefinitions.DINO.DUCK[0].y,
-      spriteDefinitions.DINO.DUCK[0].width,
-      spriteDefinitions.DINO.DUCK[0].height
-    ),
-  });
-  const duckDino = new Sprite(duckDinoTexture);
-  // dino.anchor.set(0.5, 0);
-  duckDino.x = GAME_CONSTANTS.DINO_START_X + 50;
-  // dino.y = GAME_CONSTANTS.GAME_HEIGHT - spriteDefinitions.DINO.JUMP.height;
-  /// 设置为底部
-  duckDino.anchor.set(0.5, 1);
-  duckDino.y = GAME_CONSTANTS.GAME_HEIGHT;
-  app.stage.addChild(duckDino);
+  // const duckDinoTexture = new Texture({
+  //   source: spriteSheet,
+  //   frame: new Rectangle(
+  //     spriteDefinitions.DINO.DUCK[0].x,
+  //     spriteDefinitions.DINO.DUCK[0].y,
+  //     spriteDefinitions.DINO.DUCK[0].width,
+  //     spriteDefinitions.DINO.DUCK[0].height
+  //   ),
+  // });
+  // const duckDino = new Sprite(duckDinoTexture);
+  // // dino.anchor.set(0.5, 0);
+  // duckDino.x = GAME_CONSTANTS.DINO_START_X + 50;
+  // // dino.y = GAME_CONSTANTS.GAME_HEIGHT - spriteDefinitions.DINO.JUMP.height;
+  // /// 设置为底部
+  // duckDino.anchor.set(0.5, 1);
+  // duckDino.y = GAME_CONSTANTS.GAME_HEIGHT;
+  // app.stage.addChild(duckDino);
 
   // 云朵的生成，以及不断移动
   // 添加云
@@ -113,9 +142,57 @@ async function init() {
   cloud.y = ground.y - dino.height - cloudPosition;
   app.stage.addChild(cloud);
 
-  app.ticker.add(() => {
-    // 让地面一直向左移动
-    ground.tilePosition.x -= 1; // 负值表示向左滚动，正值表示向右滚动
+  app.ticker.add((delta) => {
+    // 地面滚动
+    ground.tilePosition.x -= 1;
+
+    // 更新恐龙跳跃
+    if (dino.isJumping) {
+      // 向上： 加速度 从-10 到 0
+      // 向下： 加速度 从 0 一直增加
+      dino.y += dino.jumpVelocity;
+      dino.jumpVelocity += DINO_CONFIG.GRAVITY;
+
+      // 检查是否达到最小跳跃高度
+      if (dino.y < dino.minJumpHeight || dino.speedDrop) {
+        dino.reachedMinHeight = true;
+      }
+
+      if (dino.jumpVelocity > 0) {
+        dino.jumpVelocity += DINO_CONFIG.GRAVITY * DINO_CONFIG.SPEED_DROP_COEFFICIENT;
+      }
+
+      // 检查是否落地
+      if (dino.y > dino.groundY) {
+        dino.y = dino.groundY;
+        dino.jumpVelocity = 0;
+        dino.isJumping = false;
+        dino.reachedMinHeight = false;
+        dino.speedDrop = false;
+      }
+    }
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "ArrowUp" || e.code === "Space") {
+      if (!dino.isJumping) {
+        dino.isJumping = true;
+        dino.jumpVelocity = DINO_CONFIG.INITIAL_JUMP_VELOCITY;
+        dino.reachedMinHeight = false;
+        dino.speedDrop = false;
+      }
+    } else if (e.code === "ArrowDown") {
+      if (dino.isJumping) {
+        dino.speedDrop = true;
+      }
+      dino.isDucking = true;
+    }
+  });
+
+  window.addEventListener("keyup", (e) => {
+    if (e.code === "ArrowDown") {
+      dino.isDucking = false;
+    }
   });
 }
 init();

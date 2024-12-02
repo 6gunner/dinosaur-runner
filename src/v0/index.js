@@ -1794,6 +1794,7 @@
             if (!this.jumping) {
                 this.update(0, Trex.status.JUMPING);
                 // Tweak the jump velocity based on the speed.
+                debugger
                 this.jumpVelocity = this.config.INIITAL_JUMP_VELOCITY - (speed / 10);
                 this.jumping = true;
                 this.reachedMinHeight = false;
@@ -1820,6 +1821,7 @@
             var msPerFrame = Trex.animFrames[this.status].msPerFrame;
             var framesElapsed = deltaTime / msPerFrame;
 
+            debugger
             // Speed drop makes Trex fall faster.
             if (this.speedDrop) {
                 this.yPos += Math.round(this.jumpVelocity *
@@ -2692,8 +2694,6 @@
                 this.addNewObstacle(currentSpeed);
             } else {
                 var obstacleSpritePos = this.spritePos[obstacleType.type];
-                debugger
-
                 this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType,
                     obstacleSpritePos, this.dimensions,
                     this.gapCoefficient, currentSpeed, obstacleType.width));
