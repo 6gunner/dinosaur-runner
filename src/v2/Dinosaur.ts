@@ -18,7 +18,7 @@ export class DinosaurController {
   private container: Container;
   private spriteSheet: TextureSource;
   private status: DinosaurStatus = "IDLE";
-  private dino: AnimatedSprite;
+  public dino: AnimatedSprite;
   private jumpVelocity: number = 0;
   private reachedMinHeight: boolean = false;
   private speedDrop: boolean = false;
@@ -162,7 +162,7 @@ export class DinosaurController {
     this.speedDrop = false;
   }
 
-  endJump() {}
+  endJump() { }
   // 下蹲
   duck() {
     if (!this.isDucking) {

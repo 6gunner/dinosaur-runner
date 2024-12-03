@@ -11,7 +11,7 @@ import {
 } from "pixi.js";
 import { SPRITE_DEFINITIONS_1X as SPRITE_DEFINITIONS } from "@src/constants/sprites1x";
 import { getRandomNum } from "@src/utils";
-
+import { CollisionBox } from "./CollisionBox";
 export type ObstacleType = "CACTUS_SMALL" | "CACTUS_LARGE" | "PTERODACTYL";
 export type ObstacleConfig = {
   type: ObstacleType;
@@ -36,6 +36,7 @@ class Obstacle {
   public removed: boolean = false;
   public followingObstacleCreated: boolean = false;
   public gap: number = 0;
+  public collisionBoxes: Array<CollisionBox>;
 
   constructor(
     container: Container,
@@ -124,6 +125,7 @@ class Obstacle {
     }
 
     this.sprite = obstacleSprite;
+    this.collisionBox = new CollisionBox(obstacleSprite.x, obstacleSprite.y, obstacleSprite.width, obstacleSprite.height);
     this.container.addChild(obstacleSprite);
     this.gap = this.initGap(speed);
   }
@@ -162,7 +164,7 @@ class Obstacle {
     // 速度*障碍物宽度+最小间隙*间隙系数
     const minGap = Math.round(
       this.sprite.width * speed +
-        this.config.minGap * GAME_CONSTANTS.Obstacle.GAP_COEFFICIENT
+      this.config.minGap * GAME_CONSTANTS.Obstacle.GAP_COEFFICIENT
     );
     // 最小间隙*最大间隙系数
     const maxGap = Math.round(

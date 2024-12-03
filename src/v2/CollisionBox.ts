@@ -1,14 +1,21 @@
+import { DinosaurController } from "./Dinosaur";
+import Obstacle from "./Obstacle";
+
 /**
  * Collision box object.
  */
 export class CollisionBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   /**
    * @param {number} x X position
    * @param {number} y Y Position
    * @param {number} w Width
    * @param {number} h Height
    */
-  constructor(x, y, w, h) {
+  constructor(x: number, y: number, w: number, h: number) {
     this.x = x;
     this.y = y;
     this.width = w;
@@ -19,7 +26,7 @@ export class CollisionBox {
 /**
  * Compare two collision boxes for a collision.
  */
-export function boxCompare(tRexBox, obstacleBox) {
+export function boxCompare(tRexBox: CollisionBox, obstacleBox: CollisionBox) {
   return (
     tRexBox.x < obstacleBox.x + obstacleBox.width &&
     tRexBox.x + tRexBox.width > obstacleBox.x &&
@@ -31,7 +38,7 @@ export function boxCompare(tRexBox, obstacleBox) {
 /**
  * Adjust the collision box.
  */
-export function createAdjustedCollisionBox(box, adjustment) {
+export function createAdjustedCollisionBox(box: CollisionBox, adjustment: CollisionBox) {
   return new CollisionBox(
     box.x + adjustment.x,
     box.y + adjustment.y,
@@ -41,36 +48,28 @@ export function createAdjustedCollisionBox(box, adjustment) {
 }
 
 
-import {
-  CollisionBox,
-  createAdjustedCollisionBox,
-  boxCompare,
-} from "./CollisionBox.js";
-
 /**
  * Check for a collision.
  * @param {Obstacle} obstacle
  * @param {Trex} tRex T-rex object
- * @param {HTMLCanvasContext} opt_canvasCtx Optional canvas context for drawing collision boxes
  * @return {Array<CollisionBox>}
  */
-export function checkForCollision(obstacle, tRex, opt_canvasCtx) {
-  const obstacleBoxXPos = Runner.defaultDimensions.WIDTH + obstacle.xPos;
+export function checkForCollision(obstacle: Obstacle, tRex: DinosaurController) {
 
   // Adjustments are made to the bounding box as there is a 1 pixel white
   // border around the t-rex and obstacles.
   const tRexBox = new CollisionBox(
-    tRex.xPos + 1,
-    tRex.yPos + 1,
-    tRex.config.WIDTH - 2,
-    tRex.config.HEIGHT - 2
+    tRex.dino.x + 1,
+    tRex.dino.y + 1,
+    tRex.dino.width - 2,
+    tRex.dino.height - 2
   );
 
   const obstacleBox = new CollisionBox(
-    obstacle.xPos + 1,
-    obstacle.yPos + 1,
-    obstacle.typeConfig.width * obstacle.size - 2,
-    obstacle.typeConfig.height - 2
+    obstacle.sprite.x + 1,
+    obstacle.sprite.y + 1,
+    obstacle.sprite.width - 2,
+    obstacle.sprite.height - 2
   );
 
   // Debug outer box
@@ -116,7 +115,7 @@ export function checkForCollision(obstacle, tRex, opt_canvasCtx) {
 /**
  * Draw the collision boxes for debug.
  */
-export function drawCollisionBoxes(canvasCtx, tRexBox, obstacleBox) {
+export function drawCollisionBoxes(canvasCtx: CanvasRenderingContext2D, tRexBox: CollisionBox, obstacleBox: CollisionBox) {
   canvasCtx.save();
   canvasCtx.strokeStyle = "#f00";
   canvasCtx.strokeRect(tRexBox.x, tRexBox.y, tRexBox.width, tRexBox.height);
