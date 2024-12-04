@@ -27,11 +27,9 @@ export class DinosaurController {
 
   // 地面的位置
   private groundYPos: number;
-  // 恐龙起始位置
-  private yPos: number;
   // 最小跳跃高度
   private minJumpHeight: number;
-  private normalHeight: number;
+  private maxJumpHeight: number;
 
   constructor(app: Application, spriteSheet: TextureSource) {
     this.app = app;
@@ -47,14 +45,13 @@ export class DinosaurController {
     dino.y = GAME_CONSTANTS.GAME_HEIGHT;
     this.container.addChild(dino);
     this.dino = dino;
-    this.normalHeight = this.dino.height;
 
     this.bindEvents();
     this.app.ticker.add(this.update, this);
 
     this.groundYPos = GAME_CONSTANTS.GAME_HEIGHT;
-    this.yPos = this.groundYPos;
     this.minJumpHeight = this.groundYPos - GAME_CONSTANTS.Trex.MIN_JUMP_HEIGHT;
+    this.maxJumpHeight = this.groundYPos - GAME_CONSTANTS.Trex.MAX_JUMP_HEIGHT;
   }
 
   bindEvents() {
@@ -132,10 +129,15 @@ export class DinosaurController {
 
   update(tick: Ticker) {
     const groundY = GAME_CONSTANTS.GAME_HEIGHT;
+    const deltaTime = tick.deltaMS;
+    const framesElapsed =
+      deltaTime / GAME_CONSTANTS.Trex.animFrames[this.status].msPerFrame;
     if (this.isJumping) {
+      // console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
+      console.log(`dino.y: ${this.dino.y}`);
       // 先向上：加速度 从-10 到 0
-      this.dino.y += this.jumpVelocity;
-      this.jumpVelocity += GAME_CONSTANTS.Trex.GRAVITY;
+      this.dino.y += Math.round(this.jumpVelocity * framesElapsed);
+      this.jumpVelocity += GAME_CONSTANTS.Trex.GRAVITY * framesElapsed;
       // 检查是否达到最小跳跃高度 || 速降
       if (this.dino.y < this.minJumpHeight || this.speedDrop) {
         this.reachedMinHeight = true;
@@ -143,11 +145,10 @@ export class DinosaurController {
 
       // 不根据速度判断，这样看起来更自然
       if (
-        this.dino.y < GAME_CONSTANTS.Trex.MAX_JUMP_HEIGHT ||
+        this.dino.y < this.maxJumpHeight ||
         // this.jumpVelocity > 0 ||
         this.speedDrop
       ) {
-        console.log(`dino.y: ${this.dino.y}`);
         this.endJump();
       }
 
@@ -164,7 +165,6 @@ export class DinosaurController {
         this.dino.textures = runningDinoTexture;
         this.dino.play(); // 重新开始动画
       }
-      console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
     }
   }
 

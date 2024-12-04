@@ -16,8 +16,8 @@ export const GAME_CONSTANTS = {
     HEIGHT_DUCK: 25,
     INITIAL_JUMP_VELOCITY: -10,
     INTRO_DURATION: 1500,
-    MAX_JUMP_HEIGHT: 77,
-    MIN_JUMP_HEIGHT: 77,
+    MAX_JUMP_HEIGHT: 62,
+    MIN_JUMP_HEIGHT: 30,
     SPEED_DROP_COEFFICIENT: 3,
     SPRITE_WIDTH: 262,
     START_X_POS: 50,
@@ -36,6 +36,29 @@ export const GAME_CONSTANTS = {
     //     new CollisionBox(5, 30, 21, 4),
     //     new CollisionBox(9, 34, 15, 4)
     //   ]
+
+    animFrames: {
+      IDLE: {
+        frames: [44, 0],
+        msPerFrame: 1000 / 3,
+      },
+      RUNNING: {
+        frames: [88, 132],
+        msPerFrame: 1000 / 12,
+      },
+      CRASHED: {
+        frames: [220],
+        msPerFrame: 1000 / 60,
+      },
+      JUMPING: {
+        frames: [0],
+        msPerFrame: 1000 / 60,
+      },
+      DUCKING: {
+        frames: [264, 323],
+        msPerFrame: 1000 / 8,
+      },
+    },
   },
 
   Cloud: {

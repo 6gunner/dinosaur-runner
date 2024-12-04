@@ -1945,7 +1945,9 @@
     updateJump: function (deltaTime, speed) {
       var msPerFrame = Trex.animFrames[this.status].msPerFrame;
       var framesElapsed = deltaTime / msPerFrame;
-
+      console.log(`this.yPos: ${this.yPos}`);
+      console.log(`framesElapsed: ${framesElapsed}`);
+      console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
       // Speed drop makes Trex fall faster.
       if (this.speedDrop) {
         this.yPos += Math.round(
@@ -1973,8 +1975,6 @@
         this.jumpCount++;
       }
 
-      console.log(`this.yPos: ${this.yPos}`);
-      console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
       this.update(deltaTime);
     },
 
