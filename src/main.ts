@@ -162,7 +162,7 @@ function createRandomGround(spriteSheet: any) {
     const ground = new Sprite(groundTexture);
     ground.x = currentX;
     ground.anchor.set(0, 1);
-    ground.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+    ground.y = GAME_CONSTANTS.GAME_HEIGHT;
     groundContainer.addChild(ground);
   }
   return groundContainer;

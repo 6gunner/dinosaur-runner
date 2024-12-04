@@ -17,13 +17,20 @@ export class DinosaurController {
   private app: Application;
   private container: Container;
   private spriteSheet: TextureSource;
-  private status: DinosaurStatus = "IDLE";
-  public dino: AnimatedSprite;
+  private status: DinosaurStatus = "RUNNING";
+  private dino: AnimatedSprite;
   private jumpVelocity: number = 0;
   private reachedMinHeight: boolean = false;
   private speedDrop: boolean = false;
   private isDucking: boolean = false;
   private isJumping: boolean = false;
+
+  // 地面的位置
+  private groundYPos: number;
+  // 恐龙起始位置
+  private yPos: number;
+  // 最小跳跃高度
+  private minJumpHeight: number;
   private normalHeight: number;
 
   constructor(app: Application, spriteSheet: TextureSource) {
@@ -37,13 +44,17 @@ export class DinosaurController {
     dino.play(); // 直接在这里调用一次
     dino.anchor.set(0.5, 1);
     dino.x = GAME_CONSTANTS.DINO_START_X;
-    dino.y = GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+    dino.y = GAME_CONSTANTS.GAME_HEIGHT;
     this.container.addChild(dino);
     this.dino = dino;
     this.normalHeight = this.dino.height;
 
     this.bindEvents();
     this.app.ticker.add(this.update, this);
+
+    this.groundYPos = GAME_CONSTANTS.GAME_HEIGHT;
+    this.yPos = this.groundYPos;
+    this.minJumpHeight = this.groundYPos - GAME_CONSTANTS.Trex.MIN_JUMP_HEIGHT;
   }
 
   bindEvents() {
@@ -120,25 +131,24 @@ export class DinosaurController {
   }
 
   update(tick: Ticker) {
-    const groundY = GAME_CONSTANTS.GROUND_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+    const groundY = GAME_CONSTANTS.GAME_HEIGHT;
     if (this.isJumping) {
       // 先向上：加速度 从-10 到 0
       this.dino.y += this.jumpVelocity;
-      this.jumpVelocity +=
-        GAME_CONSTANTS.Trex.GRAVITY *
-        GAME_CONSTANTS.Trex.SPEED_DROP_COEFFICIENT;
-
+      this.jumpVelocity += GAME_CONSTANTS.Trex.GRAVITY;
       // 检查是否达到最小跳跃高度 || 速降
-      if (this.dino.y < GAME_CONSTANTS.Trex.MIN_JUMP_HEIGHT || this.speedDrop) {
+      if (this.dino.y < this.minJumpHeight || this.speedDrop) {
         this.reachedMinHeight = true;
       }
 
-      // 加速度大于0，代表开始降落了
-      if (this.jumpVelocity > 0) {
+      // 不根据速度判断，这样看起来更自然
+      if (
+        this.dino.y < GAME_CONSTANTS.Trex.MAX_JUMP_HEIGHT ||
+        // this.jumpVelocity > 0 ||
+        this.speedDrop
+      ) {
+        console.log(`dino.y: ${this.dino.y}`);
         this.endJump();
-        this.jumpVelocity +=
-          GAME_CONSTANTS.Trex.GRAVITY *
-          GAME_CONSTANTS.Trex.SPEED_DROP_COEFFICIENT;
       }
 
       // 检查是否落地
@@ -149,20 +159,36 @@ export class DinosaurController {
         this.isJumping = false;
         this.reachedMinHeight = false;
         this.speedDrop = false;
+        this.status = "RUNNING";
+        const runningDinoTexture = this.createDinoTexture();
+        this.dino.textures = runningDinoTexture;
+        this.dino.play(); // 重新开始动画
       }
+      console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
     }
   }
 
-  // 跳跃
+  // 开始跳跃
   startJump() {
     this.status = "JUMPING";
     this.isJumping = true;
     this.jumpVelocity = GAME_CONSTANTS.Trex.INITIAL_JUMP_VELOCITY; // 初始跳跃速度
     this.reachedMinHeight = false;
     this.speedDrop = false;
+    const duckDinoTexture = this.createDinoTexture();
+    this.dino.textures = duckDinoTexture;
+    this.dino.play(); // 重新开始动画
   }
 
-  endJump() { }
+  // 开始降落
+  endJump() {
+    if (
+      this.reachedMinHeight &&
+      this.jumpVelocity < GAME_CONSTANTS.Trex.DROP_VELOCITY
+    ) {
+      this.jumpVelocity = GAME_CONSTANTS.Trex.DROP_VELOCITY;
+    }
+  }
   // 下蹲
   duck() {
     if (!this.isDucking) {

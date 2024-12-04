@@ -54,7 +54,9 @@ class Obstacle {
       throw new Error(`Obstacle config not found for type: ${type}`);
     }
     this.config = config;
-    this.init(currentSpeed);
+    this.sprite = this.init(currentSpeed);
+    this.container.addChild(this.sprite);
+    this.gap = this.initGap(currentSpeed);
   }
 
   private init(speed: number) {
@@ -80,8 +82,7 @@ class Obstacle {
         const cactusSmall = new Sprite(cactusSmallTexture);
         cactusSmall.anchor.set(0.5, 1);
         cactusSmall.x = GAME_CONSTANTS.GAME_WIDTH;
-        cactusSmall.y =
-          GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+        cactusSmall.y = GAME_CONSTANTS.GAME_HEIGHT;
         obstacleSprite = cactusSmall;
         break;
       case "CACTUS_LARGE":
@@ -97,8 +98,7 @@ class Obstacle {
         const cactusLarge = new Sprite(cactusLargeTexture);
         cactusLarge.anchor.set(0.5, 1);
         cactusLarge.x = GAME_CONSTANTS.GAME_WIDTH;
-        cactusLarge.y =
-          GAME_CONSTANTS.GAME_HEIGHT - GAME_CONSTANTS.GROUND_MARGIN;
+        cactusLarge.y = GAME_CONSTANTS.GAME_HEIGHT;
         obstacleSprite = cactusLarge;
         break;
       case "PTERODACTYL":
@@ -126,8 +126,7 @@ class Obstacle {
 
     this.sprite = obstacleSprite;
     this.collisionBox = new CollisionBox(obstacleSprite.x, obstacleSprite.y, obstacleSprite.width, obstacleSprite.height);
-    this.container.addChild(obstacleSprite);
-    this.gap = this.initGap(speed);
+    return obstacleSprite;
   }
 
   update(speed: number) {
