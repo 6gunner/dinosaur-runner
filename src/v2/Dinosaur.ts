@@ -18,12 +18,12 @@ export class DinosaurController {
   private container: Container;
   private spriteSheet: TextureSource;
   private status: DinosaurStatus = "RUNNING";
-  private dino: AnimatedSprite;
+  public dino: AnimatedSprite;
   private jumpVelocity: number = 0;
   private reachedMinHeight: boolean = false;
   private speedDrop: boolean = false;
-  private isDucking: boolean = false;
-  private isJumping: boolean = false;
+  public isDucking: boolean = false;
+  public isJumping: boolean = false;
 
   // 地面的位置
   private groundYPos: number;

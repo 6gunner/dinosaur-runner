@@ -1,3 +1,4 @@
+import { GAME_CONSTANTS } from "@src/constants";
 import { DinosaurController } from "./Dinosaur";
 import Obstacle from "./Obstacle";
 
@@ -72,17 +73,17 @@ export function checkForCollision(obstacle: Obstacle, tRex: DinosaurController) 
     obstacle.sprite.height - 2
   );
 
-  // Debug outer box
-  if (opt_canvasCtx) {
-    drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
-  }
+  // // Debug outer box
+  // if (opt_canvasCtx) {
+  //   drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
+  // }
 
   // Simple outer bounds check.
   if (boxCompare(tRexBox, obstacleBox)) {
     const collisionBoxes = obstacle.collisionBoxes;
-    const tRexCollisionBoxes = tRex.ducking
-      ? Trex.collisionBoxes.DUCKING
-      : Trex.collisionBoxes.RUNNING;
+    const tRexCollisionBoxes = tRex.isDucking
+      ? GAME_CONSTANTS.Trex.collisionBoxes.DUCKING
+      : GAME_CONSTANTS.Trex.collisionBoxes.RUNNING;
 
     // Detailed axis aligned box check.
     for (let t = 0; t < tRexCollisionBoxes.length; t++) {
@@ -99,9 +100,9 @@ export function checkForCollision(obstacle: Obstacle, tRex: DinosaurController) 
         const crashed = boxCompare(adjTrexBox, adjObstacleBox);
 
         // Draw boxes for debug.
-        if (opt_canvasCtx) {
-          drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
-        }
+        // if (opt_canvasCtx) {
+        //   drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
+        // }
 
         if (crashed) {
           return [adjTrexBox, adjObstacleBox];

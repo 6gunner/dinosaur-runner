@@ -25,6 +25,7 @@ export type ObstacleConfig = {
   numFrames?: number;
   frameRate?: number;
   speedOffset?: number;
+  collisionBoxes: Array<CollisionBox>;
 };
 
 class Obstacle {
@@ -57,6 +58,7 @@ class Obstacle {
     this.sprite = this.init(currentSpeed);
     this.container.addChild(this.sprite);
     this.gap = this.initGap(currentSpeed);
+    this.collisionBoxes = this.config.collisionBoxes;
   }
 
   private init(speed: number) {
@@ -125,7 +127,6 @@ class Obstacle {
     }
 
     this.sprite = obstacleSprite;
-    this.collisionBox = new CollisionBox(obstacleSprite.x, obstacleSprite.y, obstacleSprite.width, obstacleSprite.height);
     return obstacleSprite;
   }
 

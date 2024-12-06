@@ -1,5 +1,5 @@
 import Obstacle, { ObstacleType } from "./Obstacle";
-import { Application, Container, Sprite, TextureSource, Ticker } from "pixi.js";
+import { Application, Container, TextureSource, Ticker } from "pixi.js";
 import { getRandomNum } from "@src/utils";
 import { GAME_CONSTANTS } from "@src/constants";
 
@@ -11,11 +11,8 @@ class ObstacleManager {
   private container: Container;
 
   private currentSpeed: number = 9;
-  private obstacles: Obstacle[] = [];
+  public obstacles: Obstacle[] = [];
   private obstacleHistory: ObstacleType[] = [];
-
-  // todo 
-  private lastObstacleTime: number = 0;
 
   constructor(app: Application, spriteSheet: any) {
 
@@ -118,6 +115,8 @@ class ObstacleManager {
     this.obstacles = [];
     this.lastObstacleTime = 0;
   }
+
+
 }
 
 export default ObstacleManager;

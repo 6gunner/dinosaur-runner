@@ -1,3 +1,4 @@
+import { CollisionBox } from "@src/v2/CollisionBox";
 import { ObstacleConfig, ObstacleType } from "@src/v2/Obstacle";
 
 // 游戏常量
@@ -24,18 +25,19 @@ export const GAME_CONSTANTS = {
     WIDTH: 44,
     WIDTH_DUCK: 59,
 
-    // collisionBoxes = {
-    //   DUCKING: [
-    //     new CollisionBox(1, 18, 55, 25)
-    //   ],
-    //   RUNNING: [
-    //     new CollisionBox(22, 0, 17, 16),
-    //     new CollisionBox(1, 18, 30, 9),
-    //     new CollisionBox(10, 35, 14, 8),
-    //     new CollisionBox(1, 24, 29, 5),
-    //     new CollisionBox(5, 30, 21, 4),
-    //     new CollisionBox(9, 34, 15, 4)
-    //   ]
+    collisionBoxes: {
+      DUCKING: [
+        new CollisionBox(1, 18, 55, 25)
+      ],
+      RUNNING: [
+        new CollisionBox(22, 0, 17, 16),
+        new CollisionBox(1, 18, 30, 9),
+        new CollisionBox(10, 35, 14, 8),
+        new CollisionBox(1, 24, 29, 5),
+        new CollisionBox(5, 30, 21, 4),
+        new CollisionBox(9, 34, 15, 4)
+      ]
+    },
 
     animFrames: {
       IDLE: {
@@ -108,6 +110,11 @@ export const GAME_CONSTANTS = {
         multipleSpeed: 4,
         minGap: 120,
         minSpeed: 0,
+        collisionBoxes: [
+          new CollisionBox(0, 7, 5, 27),
+          new CollisionBox(4, 0, 6, 34),
+          new CollisionBox(10, 4, 7, 14),
+        ],
       },
       {
         type: "CACTUS_LARGE",
@@ -117,6 +124,11 @@ export const GAME_CONSTANTS = {
         multipleSpeed: 7,
         minGap: 120,
         minSpeed: 0,
+        collisionBoxes: [
+          new CollisionBox(0, 12, 7, 38),
+          new CollisionBox(8, 0, 7, 49),
+          new CollisionBox(13, 10, 10, 38),
+        ],
       },
       {
         type: "PTERODACTYL",
@@ -130,6 +142,13 @@ export const GAME_CONSTANTS = {
         numFrames: 2, // 帧动画数量
         frameRate: 1000 / 6, // 帧率, 166.67ms 更新一次
         speedOffset: 0.8, // 速度加快
+        collisionBoxes: [
+          new CollisionBox(15, 15, 16, 5),
+          new CollisionBox(18, 21, 24, 6),
+          new CollisionBox(2, 14, 4, 3),
+          new CollisionBox(6, 10, 4, 7),
+          new CollisionBox(10, 8, 6, 9),
+        ],
       },
     ] as ObstacleConfig[],
   },

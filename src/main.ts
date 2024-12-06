@@ -13,6 +13,7 @@ import { GAME_CONSTANTS } from "./constants";
 import { getRandomNum } from "./utils";
 import ObstacleManager from "./v2/ObstacleManager";
 import { DinosaurController } from "./v2/Dinosaur";
+import { checkForCollision } from "./v2/CollisionBox";
 
 async function init() {
   // 获取DOM元素
@@ -127,6 +128,14 @@ async function init() {
           child.x = rightmostBlock.x + rightmostBlock.width;
         }
       });
+
+      for (const obstacle of obstacleManager.obstacles) {
+        if (checkForCollision(obstacle, dinosaurController)) {
+          console.log("碰撞了, 游戏结束");
+          app.stop();
+        }
+      }
+
     });
   } catch (error) {
     console.error("Error initializing the game:", error);
