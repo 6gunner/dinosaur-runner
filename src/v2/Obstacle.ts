@@ -106,6 +106,7 @@ class Obstacle {
       case "PTERODACTYL":
         const pterosaurYPosIndex = getRandomNum(0, this.config.yPos.length - 1);
         const pterosaurYPos = this.config.yPos[pterosaurYPosIndex];
+        debugger
         const pterosaurTextures = SPRITE_DEFINITIONS.OBSTACLES.PTERODACTYL.map(
           (item) =>
             new Texture({
@@ -118,7 +119,6 @@ class Obstacle {
         pterosaur.x = GAME_CONSTANTS.GAME_WIDTH;
         pterosaur.y =
           GAME_CONSTANTS.GAME_HEIGHT -
-          GAME_CONSTANTS.GROUND_MARGIN -
           pterosaurYPos;
         pterosaur.animationSpeed = 0.1;
         pterosaur.play();
@@ -135,9 +135,9 @@ class Obstacle {
       return;
     }
     if (this.type === "PTERODACTYL") {
-      this.sprite.x -= 2; // 向左移动的速度
+      this.sprite.x -= speed + 2; // 向左移动的速度
     } else {
-      this.sprite.x -= 1; // 向左移动的速度
+      this.sprite.x -= speed + 1; // 向左移动的速度
     }
     // 如果移出屏幕左侧，重置到右侧
     if (this.sprite.x < -this.sprite.width) {

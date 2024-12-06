@@ -25,9 +25,6 @@ class ObstacleManager {
     this.app.ticker.add(this.updateObstacles.bind(this));
   }
 
-
-
-
   addNewObstacle(currentSpeed: number) {
     // 1. 随机选择障碍物类型
     const obstacleTypeIndex = getRandomNum(0, GAME_CONSTANTS.Obstacle.types.length - 1);
@@ -113,7 +110,6 @@ class ObstacleManager {
       obstacle.remove();
     });
     this.obstacles = [];
-    this.lastObstacleTime = 0;
   }
 
 

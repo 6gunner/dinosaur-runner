@@ -31,6 +31,9 @@ async function init() {
   loadingContainer.style.display = "flex";
   gameContainer.style.display = "none";
 
+  // 调整基础速度为6，这样障碍物的额外速度（+1或+2）的影响会更小
+  let gameSpeed = 6;
+
   const app = new Application();
   await app.init({
     width: GAME_CONSTANTS.GAME_WIDTH,
@@ -100,7 +103,7 @@ async function init() {
     app.ticker.add(() => {
       // 简单的移动
       backgroundContainer.children.forEach((child) => {
-        child.x -= 1; // 向左移动的速度
+        child.x -= gameSpeed; // 向左移动的速度
         // 如果移出屏幕左侧，重置到右侧
         if (child.x < -child.width) {
           child.x = GAME_CONSTANTS.GAME_WIDTH + child.width;
@@ -108,7 +111,7 @@ async function init() {
       });
 
       groundContainer.children.forEach((child) => {
-        child.x -= 1; // 负值表示向左滚动，正值表示向右滚动
+        child.x -= gameSpeed; // 负值表示向左滚动，正值表示向右滚动
         if (child.x < -child.width) {
           const rightmostBlock = groundContainer.children.reduce((prev, curr) =>
             curr.x > prev.x ? curr : prev
@@ -138,7 +141,7 @@ async function init() {
 
     });
   } catch (error) {
-    console.error("Error initializing the game:", error);
+    console.error("game error:", error);
   }
 }
 
@@ -152,7 +155,6 @@ function getRandomType() {
 function createRandomGround(spriteSheet: any) {
   const totalWidth = GAME_CONSTANTS.GROUND_WIDTH * 2;
   const groundContainer = new Container();
-
   for (
     let currentX = 0;
     currentX < totalWidth + GAME_CONSTANTS.GROUND_WIDTH;
