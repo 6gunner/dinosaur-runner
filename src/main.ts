@@ -16,6 +16,8 @@ import { DinosaurController } from "./v2/Dinosaur";
 import { checkForCollision } from "./v2/CollisionBox";
 
 let gameStatus = 0;
+let currentSpeed = 1;
+let distanceRan = 0;
 
 async function init() {
   // 获取DOM元素
@@ -33,7 +35,6 @@ async function init() {
   loadingContainer.style.display = "flex";
   gameContainer.style.display = "none";
 
-  let gameSpeed = 1;
 
   const app = new Application();
   await app.init({
@@ -104,7 +105,7 @@ async function init() {
     app.ticker.add(() => {
       // 简单的移动
       backgroundContainer.children.forEach((child) => {
-        child.x -= gameSpeed; // 向左移动的速度
+        child.x -= currentSpeed; // 向左移动的速度
         // 如果移出屏幕左侧，重置到右侧
         if (child.x < -child.width) {
           child.x = GAME_CONSTANTS.GAME_WIDTH + child.width;
@@ -112,7 +113,7 @@ async function init() {
       });
 
       groundContainer.children.forEach((child, index) => {
-        child.x -= gameSpeed; // 负值表示向左滚动，正值表示向右滚动
+        child.x -= currentSpeed; // 负值表示向左滚动，正值表示向右滚动
         if (child.x < -child.width) {
           const rightmostBlock = groundContainer.children.reduce((prev, curr) =>
             curr.x > prev.x ? curr : prev
@@ -129,7 +130,7 @@ async function init() {
           });
           // 创建新的texture
           (child as Sprite).texture = groundTexture;
-          child.x = rightmostBlock.x - gameSpeed + GAME_CONSTANTS.GROUND_WIDTH;
+          child.x = rightmostBlock.x - currentSpeed + GAME_CONSTANTS.GROUND_WIDTH;
           console.log('Block index:', index, 'Position:', child.x);
           debugger
         }
@@ -141,7 +142,15 @@ async function init() {
           gameStatus = -1;
         }
       }
-
+      if (gameStatus === -1) {
+        app.stop();
+      } else {
+        if (currentSpeed < GAME_CONSTANTS.Runner.MAX_SPEED) {
+          distanceRan += currentSpeed;
+          currentSpeed += GAME_CONSTANTS.Runner.ACCELERATION;
+          obstacleManager.setSpeed(currentSpeed);
+        }
+      }
     });
   } catch (error) {
     console.error("game error:", error);

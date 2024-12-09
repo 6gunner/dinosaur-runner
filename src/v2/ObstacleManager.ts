@@ -10,7 +10,7 @@ class ObstacleManager {
   private spriteSheet: TextureSource;
   private container: Container;
 
-  private currentSpeed: number = 9;
+  private currentSpeed: number = 1;
   public obstacles: Obstacle[] = [];
   private obstacleHistory: ObstacleType[] = [];
 
@@ -29,6 +29,7 @@ class ObstacleManager {
     // 1. 随机选择障碍物类型
     const obstacleTypeIndex = getRandomNum(0, GAME_CONSTANTS.Obstacle.types.length - 1);
     const obstacleType = GAME_CONSTANTS.Obstacle.types[obstacleTypeIndex];
+    debugger
     // 2. 检查是否可以添加这种类型的障碍物
     if (this.duplicateObstacleCheck(obstacleType.type) ||
       currentSpeed < obstacleType.minSpeed) {
@@ -36,15 +37,16 @@ class ObstacleManager {
       this.addNewObstacle(currentSpeed);
     } else {
       // 3. 创建新障碍物
-      this.obstacles.push(
-        new Obstacle(
-          this.container,
-          this.spriteSheet,
-          obstacleType.type,
-          this.currentSpeed
-        )
+      const obstacle = new Obstacle(
+        this.container,
+        this.spriteSheet,
+        obstacleType.type,
+        this.currentSpeed
       );
 
+      console.log('obstacleGAP', obstacle.gap)
+
+      this.obstacles.push(obstacle)
       // 4. 更新障碍物历史记录
       this.obstacleHistory.unshift(obstacleType.type);
       if (this.obstacleHistory.length > 1) {
