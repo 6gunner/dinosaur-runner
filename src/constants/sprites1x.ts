@@ -39,7 +39,7 @@ export const SPRITE_DEFINITIONS_1X = {
   // 地面
   GROUND: [
     { x: 2, y: 54, width: 600, height: 12 },
-    { x: 602, y: 54, width: 600, height: 12 }
+    { x: 602, y: 54, width: 600, height: 12 }  // 修正x坐标为602
   ],
 
   // 云朵

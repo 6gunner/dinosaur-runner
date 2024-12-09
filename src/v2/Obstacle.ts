@@ -106,7 +106,6 @@ class Obstacle {
       case "PTERODACTYL":
         const pterosaurYPosIndex = getRandomNum(0, this.config.yPos.length - 1);
         const pterosaurYPos = this.config.yPos[pterosaurYPosIndex];
-        debugger
         const pterosaurTextures = SPRITE_DEFINITIONS.OBSTACLES.PTERODACTYL.map(
           (item) =>
             new Texture({

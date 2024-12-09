@@ -15,6 +15,8 @@ import ObstacleManager from "./v2/ObstacleManager";
 import { DinosaurController } from "./v2/Dinosaur";
 import { checkForCollision } from "./v2/CollisionBox";
 
+let gameStatus = 0;
+
 async function init() {
   // 获取DOM元素
   const loadingContainer = document.getElementById("loading-container");
@@ -31,8 +33,7 @@ async function init() {
   loadingContainer.style.display = "flex";
   gameContainer.style.display = "none";
 
-  // 调整基础速度为6，这样障碍物的额外速度（+1或+2）的影响会更小
-  let gameSpeed = 6;
+  let gameSpeed = 1;
 
   const app = new Application();
   await app.init({
@@ -91,9 +92,9 @@ async function init() {
 
     backgroundContainer.addChild(cloud);
 
-    // 恐龙控制器
+    // // 恐龙控制器
     const dinosaurController = new DinosaurController(app, spriteSheet);
-    // 障碍物的生成
+    // // 障碍物的生成
     const obstacleManager = new ObstacleManager(app, spriteSheet);
 
     // 地面
@@ -110,7 +111,7 @@ async function init() {
         }
       });
 
-      groundContainer.children.forEach((child) => {
+      groundContainer.children.forEach((child, index) => {
         child.x -= gameSpeed; // 负值表示向左滚动，正值表示向右滚动
         if (child.x < -child.width) {
           const rightmostBlock = groundContainer.children.reduce((prev, curr) =>
@@ -128,14 +129,16 @@ async function init() {
           });
           // 创建新的texture
           (child as Sprite).texture = groundTexture;
-          child.x = rightmostBlock.x + rightmostBlock.width;
+          child.x = rightmostBlock.x - gameSpeed + GAME_CONSTANTS.GROUND_WIDTH;
+          console.log('Block index:', index, 'Position:', child.x);
+          debugger
         }
       });
 
       for (const obstacle of obstacleManager.obstacles) {
         if (checkForCollision(obstacle, dinosaurController)) {
           console.log("碰撞了, 游戏结束");
-          app.stop();
+          gameStatus = -1;
         }
       }
 
@@ -153,13 +156,12 @@ function getRandomType() {
   return Math.random() > bumpThreshold ? 1 : 0;
 }
 function createRandomGround(spriteSheet: any) {
-  const totalWidth = GAME_CONSTANTS.GROUND_WIDTH * 2;
   const groundContainer = new Container();
+
   for (
-    let currentX = 0;
-    currentX < totalWidth + GAME_CONSTANTS.GROUND_WIDTH;
-    currentX += GAME_CONSTANTS.GROUND_WIDTH
-  ) {
+    let i = 0;
+    i < 4;
+    i++) {
     const type = getRandomType();
     const groundTexture = new Texture({
       source: spriteSheet,
@@ -171,8 +173,8 @@ function createRandomGround(spriteSheet: any) {
       ),
     });
     const ground = new Sprite(groundTexture);
-    ground.x = currentX;
     ground.anchor.set(0, 1);
+    ground.x = i * GAME_CONSTANTS.GROUND_WIDTH;
     ground.y = GAME_CONSTANTS.GAME_HEIGHT;
     groundContainer.addChild(ground);
   }
