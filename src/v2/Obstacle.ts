@@ -136,7 +136,7 @@ class Obstacle {
     if (this.type === "PTERODACTYL") {
       this.sprite.x -= speed + 2; // 向左移动的速度
     } else {
-      this.sprite.x -= speed + 1; // 向左移动的速度
+      this.sprite.x -= speed; // 向左移动的速度
     }
     // 如果移出屏幕左侧，重置到右侧
     if (this.sprite.x < -this.sprite.width) {

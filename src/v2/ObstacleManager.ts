@@ -4,8 +4,6 @@ import { getRandomNum } from "@src/utils";
 import { GAME_CONSTANTS } from "@src/constants";
 
 class ObstacleManager {
-
-
   private app: Application;
   private spriteSheet: TextureSource;
   private container: Container;
@@ -14,10 +12,11 @@ class ObstacleManager {
   public obstacles: Obstacle[] = [];
   private obstacleHistory: ObstacleType[] = [];
 
-  constructor(app: Application, spriteSheet: any) {
+  constructor(app: Application, spriteSheet: any, currentSpeed: number) {
 
     this.app = app;
     this.spriteSheet = spriteSheet;
+    this.currentSpeed = currentSpeed;
     // 创建障碍物容器
     this.container = new Container();
     app.stage.addChild(this.container);
@@ -29,7 +28,6 @@ class ObstacleManager {
     // 1. 随机选择障碍物类型
     const obstacleTypeIndex = getRandomNum(0, GAME_CONSTANTS.Obstacle.types.length - 1);
     const obstacleType = GAME_CONSTANTS.Obstacle.types[obstacleTypeIndex];
-    debugger
     // 2. 检查是否可以添加这种类型的障碍物
     if (this.duplicateObstacleCheck(obstacleType.type) ||
       currentSpeed < obstacleType.minSpeed) {

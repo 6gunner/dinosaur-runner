@@ -14,6 +14,7 @@ import { getRandomNum } from "./utils";
 import ObstacleManager from "./v2/ObstacleManager";
 import { DinosaurController } from "./v2/Dinosaur";
 import { checkForCollision } from "./v2/CollisionBox";
+import Ground from "./v2/Ground";
 
 let gameStatus = 0;
 let currentSpeed = 1;
@@ -36,13 +37,7 @@ async function init() {
   gameContainer.style.display = "none";
 
 
-  const app = new Application();
-  await app.init({
-    width: GAME_CONSTANTS.GAME_WIDTH,
-    height: GAME_CONSTANTS.GAME_HEIGHT,
-    background: "#fff",
-  });
-  gameContainer.appendChild(app.canvas);
+
 
   try {
     // 资源加载
@@ -65,6 +60,13 @@ async function init() {
       gameContainer.style.display = "flex";
     }, 500);
 
+    const app = new Application();
+    await app.init({
+      width: GAME_CONSTANTS.GAME_WIDTH,
+      height: GAME_CONSTANTS.GAME_HEIGHT,
+      background: "#fff",
+    });
+    gameContainer.appendChild(app.canvas);
     const backgroundContainer = new Container();
     app.stage.addChild(backgroundContainer);
 
@@ -96,11 +98,10 @@ async function init() {
     // // 恐龙控制器
     const dinosaurController = new DinosaurController(app, spriteSheet);
     // // 障碍物的生成
-    const obstacleManager = new ObstacleManager(app, spriteSheet);
+    const obstacleManager = new ObstacleManager(app, spriteSheet, currentSpeed);
 
     // 地面
-    const groundContainer = createRandomGround(spriteSheet);
-    app.stage.addChild(groundContainer);
+    const ground = new Ground(app, spriteSheet, currentSpeed);
 
     app.ticker.add(() => {
       // 简单的移动
@@ -112,28 +113,6 @@ async function init() {
         }
       });
 
-      groundContainer.children.forEach((child, index) => {
-        child.x -= currentSpeed; // 负值表示向左滚动，正值表示向右滚动
-        if (child.x < -child.width) {
-          const rightmostBlock = groundContainer.children.reduce((prev, curr) =>
-            curr.x > prev.x ? curr : prev
-          );
-          const type = getRandomType();
-          const groundTexture = new Texture({
-            source: spriteSheet,
-            frame: new Rectangle(
-              SPRITE_DEFINITIONS.GROUND[type].x,
-              SPRITE_DEFINITIONS.GROUND[type].y,
-              SPRITE_DEFINITIONS.GROUND[type].width,
-              SPRITE_DEFINITIONS.GROUND[type].height
-            ),
-          });
-          // 创建新的texture
-          (child as Sprite).texture = groundTexture;
-          child.x = rightmostBlock.x - currentSpeed + GAME_CONSTANTS.GROUND_WIDTH;
-          console.log('Block index:', index, 'Position:', child.x);
-        }
-      });
 
       for (const obstacle of obstacleManager.obstacles) {
         if (checkForCollision(obstacle, dinosaurController)) {
@@ -142,12 +121,13 @@ async function init() {
         }
       }
       if (gameStatus === -1) {
-        // app.stop();
+        app.stop();
       } else {
         if (currentSpeed < GAME_CONSTANTS.Runner.MAX_SPEED) {
           distanceRan += currentSpeed;
           currentSpeed += GAME_CONSTANTS.Runner.ACCELERATION;
           obstacleManager.setSpeed(currentSpeed);
+          ground.setSpeed(currentSpeed);
         }
       }
     });
@@ -156,37 +136,6 @@ async function init() {
   }
 }
 
-// 创建随机地面纹理
-const bumpThreshold = 0.5;
-function getRandomType() {
-  // 如果随机数 > 0.5，返回 WIDTH（使用第二种地面类型）
-  // 否则返回 0（使用第一种地面类型）
-  return Math.random() > bumpThreshold ? 1 : 0;
-}
-function createRandomGround(spriteSheet: any) {
-  const groundContainer = new Container();
 
-  for (
-    let i = 0;
-    i < 4;
-    i++) {
-    const type = getRandomType();
-    const groundTexture = new Texture({
-      source: spriteSheet,
-      frame: new Rectangle(
-        SPRITE_DEFINITIONS.GROUND[type].x,
-        SPRITE_DEFINITIONS.GROUND[type].y,
-        SPRITE_DEFINITIONS.GROUND[type].width,
-        SPRITE_DEFINITIONS.GROUND[type].height
-      ),
-    });
-    const ground = new Sprite(groundTexture);
-    ground.anchor.set(0, 1);
-    ground.x = i * GAME_CONSTANTS.GROUND_WIDTH;
-    ground.y = GAME_CONSTANTS.GAME_HEIGHT;
-    groundContainer.addChild(ground);
-  }
-  return groundContainer;
-}
 
 init();
