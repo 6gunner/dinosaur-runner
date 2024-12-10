@@ -1,5 +1,4 @@
 import {
-  AnimatedSprite,
   Application,
   Assets,
   Container,

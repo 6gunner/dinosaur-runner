@@ -163,7 +163,7 @@ class Obstacle {
     // 速度*障碍物宽度+最小间隙*间隙系数
     const minGap = Math.round(
       this.sprite.width * speed +
-      this.config.minGap * (1 + GAME_CONSTANTS.Obstacle.GAP_COEFFICIENT)
+      this.config.minGap * GAME_CONSTANTS.Obstacle.GAP_COEFFICIENT
     );
     // 最小间隙*最大间隙系数
     const maxGap = Math.round(
