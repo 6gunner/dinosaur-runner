@@ -64,13 +64,16 @@ export class DinosaurController {
         if (this.status == "JUMPING") {
           // 速降
           this.speedDrop = true;
+          this.jumpVelocity = 1;
+        } else {
+          this.duck();
         }
-        this.duck();
       }
     });
 
     window.addEventListener("keyup", (e) => {
       if (e.code === "ArrowDown") {
+        this.speedDrop = false;
         this.unduck();
       }
     });
@@ -134,9 +137,13 @@ export class DinosaurController {
       deltaTime / GAME_CONSTANTS.Trex.animFrames[this.status].msPerFrame;
     if (this.isJumping) {
       // console.log(`this.jumpVelocity: ${this.jumpVelocity}`);
-      console.log(`dino.y: ${this.dino.y}`);
-      // 先向上：加速度 从-10 到 0
-      this.dino.y += Math.round(this.jumpVelocity * framesElapsed);
+      // console.log(`dino.y: ${this.dino.y}`);
+      if (this.speedDrop) {
+        this.dino.y += Math.round(this.jumpVelocity * framesElapsed * GAME_CONSTANTS.Trex.SPEED_DROP_COEFFICIENT);
+      } else {
+        // 先向上：加速度 从-10 到 0
+        this.dino.y += Math.round(this.jumpVelocity * framesElapsed);
+      }
       this.jumpVelocity += GAME_CONSTANTS.Trex.GRAVITY * framesElapsed;
       // 检查是否达到最小跳跃高度 || 速降
       if (this.dino.y < this.minJumpHeight || this.speedDrop) {
@@ -146,7 +153,6 @@ export class DinosaurController {
       // 不根据速度判断，这样看起来更自然
       if (
         this.dino.y < this.maxJumpHeight ||
-        // this.jumpVelocity > 0 ||
         this.speedDrop
       ) {
         this.endJump();
@@ -159,11 +165,15 @@ export class DinosaurController {
         this.jumpVelocity = 0; // 不再降落
         this.isJumping = false;
         this.reachedMinHeight = false;
-        this.speedDrop = false;
-        this.status = "RUNNING";
-        const runningDinoTexture = this.createDinoTexture();
-        this.dino.textures = runningDinoTexture;
-        this.dino.play(); // 重新开始动画
+        if (this.speedDrop) {
+          this.speedDrop = false;
+          this.duck();
+        } else {
+          this.status = "RUNNING";
+          const runningDinoTexture = this.createDinoTexture();
+          this.dino.textures = runningDinoTexture;
+          this.dino.play(); // 重新开始动画
+        }
       }
     }
   }

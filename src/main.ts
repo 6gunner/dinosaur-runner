@@ -132,7 +132,6 @@ async function init() {
           (child as Sprite).texture = groundTexture;
           child.x = rightmostBlock.x - currentSpeed + GAME_CONSTANTS.GROUND_WIDTH;
           console.log('Block index:', index, 'Position:', child.x);
-          debugger
         }
       });
 
@@ -143,7 +142,7 @@ async function init() {
         }
       }
       if (gameStatus === -1) {
-        app.stop();
+        // app.stop();
       } else {
         if (currentSpeed < GAME_CONSTANTS.Runner.MAX_SPEED) {
           distanceRan += currentSpeed;
