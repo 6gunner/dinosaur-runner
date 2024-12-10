@@ -17,7 +17,7 @@ import { checkForCollision } from "./v2/CollisionBox";
 import Ground from "./v2/Ground";
 
 let gameStatus = 0;
-let currentSpeed = 1;
+let currentSpeed = 1.5;
 let distanceRan = 0;
 
 async function init() {
